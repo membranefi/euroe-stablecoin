@@ -1,6 +1,6 @@
 # EURO Stablecoin
 
-Smart contracts for the Euro-backed stablecoin project, EURE.
+Smart contracts for the Euro-backed stablecoin project, EURO.
 
 ## Functionalities
 
@@ -31,7 +31,7 @@ This can be achieved in either of the following two ways:
 1. Add allowance for an address with the _minter_ user role to withdraw your tokens. This allowance can be given either with a direct ERC-20 `approve` transaction to the contract or with a `permit` signature. The address with the _minter_ role burns the tokens.
 1. Transfer tokens to an address with the _minter_ user role. That address then burns the tokens.
 
-Note that this functionality should be coordinated with the EURE project and only executed after an agreement.
+Note that this functionality should be coordinated with the EURO Stablecoin project and only executed after an agreement.
 
 ### Minting tokens
 
