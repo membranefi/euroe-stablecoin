@@ -8,7 +8,7 @@
     "postinstall": "patch-package"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "4.6.0",
+    "@openzeppelin/contracts": "4.7.1",
     "@openzeppelin/contracts-upgradeable": "4.6.0"
   },
   "devDependencies": {
