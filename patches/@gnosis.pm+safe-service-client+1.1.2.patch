@@ -1,0 +1,78 @@
+diff --git a/node_modules/@gnosis.pm/safe-service-client/dist/src/SafeServiceClient.js b/node_modules/@gnosis.pm/safe-service-client/dist/src/SafeServiceClient.js
+index 97d3ee4..054be34 100644
+--- a/node_modules/@gnosis.pm/safe-service-client/dist/src/SafeServiceClient.js
++++ b/node_modules/@gnosis.pm/safe-service-client/dist/src/SafeServiceClient.js
+@@ -321,7 +321,12 @@ class SafeServiceClient {
+      * @throws "Invalid data"
+      * @throws "Invalid ethereum address/User is not an owner/Invalid signature/Nonce already executed/Sender is not an owner"
+      */
+-    async proposeTransaction({ safeAddress, senderAddress, safeTransaction, safeTxHash, origin }) {
++    async proposeTransaction({ safeAddress,
++        safeTransactionData,
++        safeTxHash,
++        senderAddress,
++        senderSignature,
++        origin }) {
+         var _a;
+         if (safeAddress === '') {
+             throw new Error('Invalid Safe address');
+@@ -335,10 +340,10 @@ class SafeServiceClient {
+             url: `${__classPrivateFieldGet(this, _SafeServiceClient_txServiceBaseUrl, "f")}/safes/${safe}/multisig-transactions/`,
+             method: httpRequests_1.HttpMethod.Post,
+             body: {
+-                ...safeTransaction.data,
++                ...safeTransactionData,
+                 contractTransactionHash: safeTxHash,
+                 sender,
+-                signature: (_a = safeTransaction.signatures.get(sender.toLowerCase())) === null || _a === void 0 ? void 0 : _a.data,
++                signature: senderSignature,
+                 origin
+             }
+         });
+diff --git a/node_modules/@gnosis.pm/safe-service-client/dist/src/SafeTransactionService.d.ts b/node_modules/@gnosis.pm/safe-service-client/dist/src/SafeTransactionService.d.ts
+index 5b33bc3..d725c3f 100644
+--- a/node_modules/@gnosis.pm/safe-service-client/dist/src/SafeTransactionService.d.ts
++++ b/node_modules/@gnosis.pm/safe-service-client/dist/src/SafeTransactionService.d.ts
+@@ -15,7 +15,12 @@ interface SafeTransactionService {
+     removeAllSafeDelegates(safeAddress: string, signer: Signer): Promise<void>;
+     getSafeCreationInfo(safeAddress: string): Promise<SafeCreationInfoResponse>;
+     estimateSafeTransaction(safeAddress: string, safeTransaction: SafeMultisigTransactionEstimate): Promise<SafeMultisigTransactionEstimateResponse>;
+-    proposeTransaction({ safeAddress, senderAddress, safeTransaction, safeTxHash, origin }: ProposeTransactionProps): Promise<void>;
++    proposeTransaction({ safeAddress,
++        senderAddress,
++        safeTransactionData,
++        senderSignature,
++        safeTxHash,
++        origin }: ProposeTransactionProps): Promise<void>;
+     getIncomingTransactions(safeAddress: string): Promise<TransferListResponse>;
+     getModuleTransactions(safeAddress: string): Promise<SafeModuleTransactionListResponse>;
+     getMultisigTransactions(safeAddress: string): Promise<SafeMultisigTransactionListResponse>;
+diff --git a/node_modules/@gnosis.pm/safe-service-client/dist/src/types/safeTransactionServiceTypes.d.ts b/node_modules/@gnosis.pm/safe-service-client/dist/src/types/safeTransactionServiceTypes.d.ts
+index 922d692..233c1f7 100644
+--- a/node_modules/@gnosis.pm/safe-service-client/dist/src/types/safeTransactionServiceTypes.d.ts
++++ b/node_modules/@gnosis.pm/safe-service-client/dist/src/types/safeTransactionServiceTypes.d.ts
+@@ -1,5 +1,5 @@
+ import { Signer } from '@ethersproject/abstract-signer';
+-import { SafeTransaction } from '@gnosis.pm/safe-core-sdk-types';
++import { SafeTransactionData } from '@gnosis.pm/safe-core-sdk-types';
+ export declare type SafeServiceInfoResponse = {
+     readonly name: string;
+     readonly version: string;
+@@ -98,11 +98,12 @@ export declare type SafeMultisigConfirmationListResponse = {
+     readonly results: SafeMultisigConfirmationResponse[];
+ };
+ export declare type ProposeTransactionProps = {
+-    safeAddress: string;
+-    senderAddress: string;
+-    safeTransaction: SafeTransaction;
+-    safeTxHash: string;
+-    origin?: string;
++    safeAddress: string
++    safeTransactionData: SafeTransactionData
++    safeTxHash: string
++    senderAddress: string
++    senderSignature: string
++    origin?: string
+ };
+ export declare type SafeMultisigTransactionResponse = {
+     readonly safe: string;

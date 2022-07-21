@@ -1,0 +1,16 @@
+diff --git a/node_modules/@gnosis.pm/safe-core-sdk/dist/src/Safe.js b/node_modules/@gnosis.pm/safe-core-sdk/dist/src/Safe.js
+index f10db79..77f4f15 100644
+--- a/node_modules/@gnosis.pm/safe-core-sdk/dist/src/Safe.js
++++ b/node_modules/@gnosis.pm/safe-core-sdk/dist/src/Safe.js
+@@ -242,9 +242,9 @@ class Safe {
+         const owners = await this.getOwners();
+         const signerAddress = await __classPrivateFieldGet(this, _Safe_ethAdapter, "f").getSignerAddress();
+         const addressIsOwner = owners.find((owner) => signerAddress && (0, utils_1.sameString)(owner, signerAddress));
+-        if (!addressIsOwner) {
++     /*    if (!addressIsOwner) {
+             throw new Error('Transactions can only be signed by Safe owners');
+-        }
++        } */
+         return (0, signatures_1.generateSignature)(__classPrivateFieldGet(this, _Safe_ethAdapter, "f"), hash);
+     }
+     /**

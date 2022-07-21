@@ -1,0 +1,21 @@
+node_modules
+.secrets.env
+test/contracts/*.json
+
+# Hardhat files
+cache
+artifacts
+deployments/localhost
+typechain
+coverage.json
+coverage
+
+# Openzeppelin
+.openzeppelin
+
+# Editors, IDEs
+.idea
+
+# Python virtual environment (for Slither at least)
+.venv
+
