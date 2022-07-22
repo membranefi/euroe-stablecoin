@@ -895,9 +895,7 @@ describe("Token", () => {
     it("sending Eth to the contract fails", async () => {
       await expect(
         user1.sendTransaction({ to: erc20.address, value: 5 })
-      ).to.revertedWith(
-        "Transaction reverted: function selector was not recognized and there's no fallback nor receive function"
-      );
+      ).to.revertedWith("Transaction reverted without a reason string");
     });
 
     it("sending contract's own tokens to the contract fails", async () => {
