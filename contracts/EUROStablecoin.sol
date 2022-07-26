@@ -95,12 +95,7 @@ contract EUROStablecoin is
     }
 
     /// @inheritdoc ERC20BurnableUpgradeable
-    function burn(uint256 amount)
-        public
-        override
-        whenNotPaused
-        onlyRole(MINTER_ROLE)
-    {
+    function burn(uint256 amount) public override onlyRole(MINTER_ROLE) {
         super.burn(amount);
     }
 
@@ -108,7 +103,6 @@ contract EUROStablecoin is
     function burnFrom(address account, uint256 amount)
         public
         override
-        whenNotPaused
         onlyRole(MINTER_ROLE)
     {
         super.burnFrom(account, amount);
@@ -132,7 +126,7 @@ contract EUROStablecoin is
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) public whenNotPaused onlyRole(MINTER_ROLE) {
+    ) public onlyRole(MINTER_ROLE) {
         super.permit(owner, spender, value, deadline, v, r, s);
         super.burnFrom(owner, value);
     }
@@ -149,7 +143,7 @@ contract EUROStablecoin is
         uint256[] calldata amounts,
         uint256 id,
         bytes32 checksum
-    ) external whenNotPaused onlyRole(MINTER_ROLE) {
+    ) external onlyRole(MINTER_ROLE) {
         require(targets.length == amounts.length, "Unmatching mint lengths");
         require(targets.length > 0, "Nothing to mint");
 
