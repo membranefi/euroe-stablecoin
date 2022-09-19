@@ -18,4 +18,5 @@ coverage
 
 # Python virtual environment (for Slither at least)
 .venv
-
+.key
+fireblocks_secret.key

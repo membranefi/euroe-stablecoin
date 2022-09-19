@@ -2,14 +2,17 @@
 import { Networks, SupportedNetwork } from "./network.config";
 import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-waffle";
-import "hardhat-deploy";
+//import "hardhat-deploy";
 import "@typechain/hardhat";
 import "solidity-coverage";
 import "@openzeppelin/hardhat-upgrades";
-import { HardhatUserConfig, NetworksUserConfig } from "hardhat/types";
+import { NetworksUserConfig } from "hardhat/types";
+import { HardhatUserConfig } from "hardhat/config";
 import { setupSafeDeployer } from "hardhat-safe-deployer";
 import { Wallet } from "ethers";
+import "@nomiclabs/hardhat-etherscan";
 import Env from "dotenv";
+import "@fireblocks/hardhat-fireblocks";
 
 Env.config({ path: "./.secrets.env" });
 
@@ -22,7 +25,7 @@ if (!multisig || !safeService || !privateKey) {
   throw "Missing configuration values";
 }
 
-setupSafeDeployer(new Wallet(privateKey), multisig, safeService);
+//setupSafeDeployer(new Wallet(privateKey), multisig, safeService);
 
 let networks: NetworksUserConfig = {
   /*   mainnet: {
@@ -33,11 +36,8 @@ let networks: NetworksUserConfig = {
     chainId: 1,
   }, */
   goerli: {
-    url: Networks.goerli.providerURL,
+    url: Networks.goerli.providerURL, //Networks.goerli.providerURL,
     accounts: Networks.goerli.privateKeys,
-    live: true,
-    saveDeployments: true,
-    chainId: 5,
   },
 };
 const HARDHAT_NETWORK_ID = 31337;
@@ -52,9 +52,9 @@ if (forkId) {
 }
 networks.localhost = {
   chainId: localChainId,
-  live: false,
-  saveDeployments: true,
-  tags: ["local"],
+  //live: false,
+  // saveDeployments: true,
+  //tags: ["local"],
 };
 networks.hardhat = {
   gasPrice: "auto",
@@ -65,16 +65,19 @@ networks.hardhat = {
     url: forkingURL || "",
   },
   chainId: localChainId,
-  live: false,
-  saveDeployments: true,
-  tags: ["test", "local"],
+  // live: false,
+  //saveDeployments: true,
+  //tags: ["test", "local"],
 };
 
 const hardhatConfig: HardhatUserConfig = {
-  verify: {
+  /*   verify: {
     etherscan: {
       apiKey: process.env.ETHERSCAN_APIKEY,
     },
+  }, */
+  etherscan: {
+    apiKey: process.env.ETHERSCAN_APIKEY,
   },
   typechain: {
     outDir: "typechain/euro",
@@ -90,7 +93,7 @@ const hardhatConfig: HardhatUserConfig = {
   },
   defaultNetwork: "hardhat",
   networks,
-  namedAccounts: {
+  /* namedAccounts: {
     proxyOwner: {
       default: 0, // the first account for mnemonic/specific private key
       goerli: 0,
@@ -119,7 +122,7 @@ const hardhatConfig: HardhatUserConfig = {
       default: 6,
       goerli: multisig,
     },
-  },
+  }, */
   mocha: {
     timeout: 0,
   },

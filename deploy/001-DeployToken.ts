@@ -1,5 +1,6 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
+import hre from "hardhat";
 
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployments, getNamedAccounts, network, ethers } = hre;
@@ -14,7 +15,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
   const results = await deploy(contractName + "_via_UUPS", {
     contract: contractName,
-    from: multisig,
+    from: proxyOwner,
     args: [],
     proxy: {
       proxyContract: "ERC1967Proxy",

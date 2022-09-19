@@ -1,6 +1,6 @@
 import { expect, use } from "chai";
 import chaiAsPromised from "chai-as-promised";
-import { deployments, ethers, getUnnamedAccounts } from "hardhat";
+import { ethers } from "hardhat";
 import { deployMockContract, solidity } from "ethereum-waffle";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { signERC2612Permit } from "eth-permit";
