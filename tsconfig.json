@@ -4,7 +4,8 @@
     "module": "commonjs",
     "strict": false,
     "esModuleInterop": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "resolveJsonModule": true,
   },
   "include": [
     "./test",

@@ -27,6 +27,7 @@
     "eth-typed-data": "^0.1.0-beta.0",
     "ethereum-waffle": "^3.4.4",
     "ethers": "^5.6.8",
+    "fireblocks-defi-sdk": "^1.2.5",
     "hardhat": "^2.9.9",
     "solidity-coverage": "^0.7.21",
     "ts-node": "^10.8.0",

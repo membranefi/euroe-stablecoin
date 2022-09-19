@@ -1,6 +1,7 @@
 node_modules
 .secrets.env
 test/contracts/*.json
+fireblocks_secret.key
 
 # Hardhat files
 cache
