@@ -1,7 +1,6 @@
 import { expect, use } from "chai";
-import chaiAsPromised from "chai-as-promised";
-import { deployments, ethers, getUnnamedAccounts } from "hardhat";
-import { deployMockContract, solidity } from "ethereum-waffle";
+import { upgrades } from "hardhat";
+import { deployMockContract } from "ethereum-waffle";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { signERC2612Permit } from "eth-permit";
 import {
@@ -11,61 +10,70 @@ import {
   MockTokenV2,
   MockTokenV2__factory,
 } from "../typechain/euro";
+import { ethers, waffle } from "hardhat";
 
-use(solidity);
-use(chaiAsPromised);
+const { loadFixture } = waffle;
 
 const TOKEN_DECIMALS = 6;
 const mintAmount = 10;
 
-const setupTest = deployments.createFixture(
-  async ({ deployments, getNamedAccounts, ethers }) => {
-    await deployments.fixture(); // ensure you start from a fresh deployments
+describe("Token", () => {
+  async function fixture() {
+    const accounts = await ethers.getSigners();
+    const proxyOwner = accounts[0],
+      admin = accounts[1],
+      blocklister = accounts[2],
+      pauser = accounts[3],
+      unpauser = accounts[4],
+      minter = accounts[5];
 
-    const { proxyOwner, admin, pauser, unpauser, blocklister, minter } =
-      await getNamedAccounts();
-    const proxyOwnerSigner = await ethers.getSigner(proxyOwner),
-      adminSigner = await ethers.getSigner(admin),
-      blocklisterSigner = await ethers.getSigner(blocklister),
-      pauserSigner = await ethers.getSigner(pauser),
-      unpauserSigner = await ethers.getSigner(unpauser),
-      minterSigner = await ethers.getSigner(minter);
+    const userWithTokens = accounts[6];
+    const user1 = accounts[7];
+    const user2 = accounts[8];
 
-    const otherAccounts = await getUnnamedAccounts();
-    const userWithTokens = await ethers.getSigner(otherAccounts[0]);
-    const user1 = await ethers.getSigner(otherAccounts[1]);
-    const user2 = await ethers.getSigner(otherAccounts[2]);
+    const Token = await ethers.getContractFactory("MockToken");
+    const deployment = await upgrades.deployProxy(
+      Token,
+      [
+        proxyOwner.address,
+        admin.address,
+        blocklister.address,
+        pauser.address,
+        unpauser.address,
+        minter.address,
+      ],
+      {
+        kind: "uups",
+      }
+    );
+    const erc20 = (await deployment.deployed()) as MockToken;
 
-    const erc20Contract = await ethers.getContract("MockToken", proxyOwner);
-    const erc20 = erc20Contract as MockToken;
     await erc20.freeMint(userWithTokens.address, mintAmount);
 
     // Deploy another dummy token, without real upgradability
-    const dummyToken = await new MockERC20__factory(proxyOwnerSigner).deploy();
+    const dummyToken = await new MockERC20__factory(proxyOwner).deploy();
 
     // Deploy a new version of the implementation
-    const erc20v2 = await new MockTokenV2__factory(proxyOwnerSigner).deploy();
+    const erc20v2 = await new MockTokenV2__factory(proxyOwner).deploy();
 
     return {
       erc20,
       erc20v2,
       dummyToken,
       users: {
-        proxyOwner: proxyOwnerSigner,
-        admin: adminSigner,
-        blocklister: blocklisterSigner,
-        pauser: pauserSigner,
-        unpauser: unpauserSigner,
-        minter: minterSigner,
+        proxyOwner,
+        admin,
+        blocklister,
+        pauser,
+        unpauser,
+        minter,
         userWithTokens,
         user1,
         user2,
       },
     };
   }
-);
 
-describe("Token", () => {
   let proxyOwner: SignerWithAddress,
     admin: SignerWithAddress,
     blocklister: SignerWithAddress,
@@ -80,7 +88,8 @@ describe("Token", () => {
   let dummytoken: MockERC20;
 
   beforeEach(async () => {
-    const r = await setupTest(mintAmount);
+    const r = await loadFixture(fixture);
+
     erc20 = r.erc20;
     erc20v2 = r.erc20v2;
     dummytoken = r.dummyToken;

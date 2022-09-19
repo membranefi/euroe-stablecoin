@@ -26,7 +26,7 @@ export const Networks: Record<SupportedNetwork, NetworkConfig> = {
     multisigAddress: process.env.MAINNET_DEPLOYER_ADDRESS,
   } */
   goerli: {
-    providerURL: `https://eth-goerli.alchemyapi.io/v2/${process.env.GOERLI_ALCHEMY_APIKEY}`,
+    providerURL: `https://eth-goerli.g.alchemy.com/v2/${process.env.GOERLI_ALCHEMY_APIKEY}`,
     privateKeys: process.env.GOERLI_DEPLOYER_PRIVATE_KEY
       ? [process.env.GOERLI_DEPLOYER_PRIVATE_KEY]
       : undefined,
