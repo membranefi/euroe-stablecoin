@@ -6,26 +6,57 @@ import { deploy, verify } from "./tools";
 
 // Used for deploying to FireBlocks
 async function main() {
-  const accounts = await ethers.getSigners();
+  let address_proxyOwner: string,
+    address_admin: string,
+    address_blocklister: string,
+    address_pauser: string,
+    address_unpauser: string,
+    address_minter: string,
+    api_secret_path: string,
+    api_key: string,
+    vault_account_id: string,
+    alchemy_api_key: string;
 
-  // CONFIGURE addresses
-  const proxyOwner = accounts[0],
-    admin = "0x46D76B07c96aB45e4d794a7bcFAF6C06F6f6fd13",
-    blocklister = "0x46D76B07c96aB45e4d794a7bcFAF6C06F6f6fd13",
-    pauser = "0x46D76B07c96aB45e4d794a7bcFAF6C06F6f6fd13",
-    unpauser = "0x46D76B07c96aB45e4d794a7bcFAF6C06F6f6fd13",
-    minter = "0x46D76B07c96aB45e4d794a7bcFAF6C06F6f6fd13";
+  if (network.name == "goerli") {
+    address_proxyOwner = process.env.GOERLI_FIREBLOCKS_PROXYOWNER;
+    address_admin = process.env.GOERLI_FIREBLOCKS_PROXYOWNER;
+    address_blocklister = process.env.GOERLI_FIREBLOCKS_PROXYOWNER;
+    address_pauser = process.env.GOERLI_FIREBLOCKS_PROXYOWNER;
+    address_unpauser = process.env.GOERLI_FIREBLOCKS_PROXYOWNER;
+    address_minter = process.env.GOERLI_FIREBLOCKS_PROXYOWNER;
+    api_secret_path = process.env.GOERLI_FIREBLOCKS_API_SECRET_PATH;
+    api_key = process.env.GOERLI_FIREBLOCKS_API_KEY;
+    vault_account_id = process.env.GOERLI_FIREBLOCKS_SOURCE_VAULT_ACCOUNT_ID;
+    alchemy_api_key = process.env.GOERLI_ALCHEMY_APIKEY;
+  } else if (network.name == "mainnet") {
+    address_proxyOwner = process.env.MAINNET_FIREBLOCKS_PROXYOWNER;
+    address_admin = process.env.MAINNET_FIREBLOCKS_PROXYOWNER;
+    address_blocklister = process.env.MAINNET_FIREBLOCKS_PROXYOWNER;
+    address_pauser = process.env.MAINNET_FIREBLOCKS_PROXYOWNER;
+    address_unpauser = process.env.MAINNET_FIREBLOCKS_PROXYOWNER;
+    address_minter = process.env.MAINNET_FIREBLOCKS_PROXYOWNER;
+    api_secret_path = process.env.MAINNET_FIREBLOCKS_API_SECRET_PATH;
+    api_key = process.env.MAINNET_FIREBLOCKS_API_KEY;
+    vault_account_id = process.env.MAINNET_FIREBLOCKS_SOURCE_VAULT_ACCOUNT_ID;
+    alchemy_api_key = process.env.MAINNET_ALCHEMY_APIKEY;
+  }
 
   if (network.name == "hardhat" || network.name == "localhost") {
     throw "Local deployment not possible";
   }
 
   if (
-    !process.env.GOERLI_FIREBLOCKS_API_SECRET_PATH ||
-    !process.env.GOERLI_FIREBLOCKS_API_KEY ||
-    !process.env.GOERLI_FIREBLOCKS_SOURCE_VAULT_ACCOUNT_INDEX ||
     !process.env.ETHERSCAN_APIKEY ||
-    !process.env.GOERLI_ALCHEMY_APIKEY
+    !api_secret_path ||
+    !api_key ||
+    !vault_account_id ||
+    !alchemy_api_key ||
+    !address_proxyOwner ||
+    !address_admin ||
+    !address_blocklister ||
+    !address_pauser ||
+    !address_unpauser ||
+    !address_minter
   ) {
     throw "Invalid configuration";
   }
@@ -37,21 +68,31 @@ async function main() {
   const implDeployment = contractJSON.bytecode + implDeploy.replace("0x", "");
 
   const encoded = implIFace.encodeFunctionData("initialize", [
-    proxyOwner.address,
-    admin,
-    blocklister,
-    pauser,
-    unpauser,
-    minter,
+    address_proxyOwner,
+    address_admin,
+    address_blocklister,
+    address_pauser,
+    address_unpauser,
+    address_minter,
   ]);
 
-  const implAddress = await deploy(implDeployment);
+  const implAddress = await deploy(
+    api_secret_path,
+    api_key,
+    vault_account_id,
+    implDeployment
+  );
 
   const proxyParameters = [implAddress, encoded];
   const proxyDeploy = proxyIFace.encodeDeploy(proxyParameters);
   const proxyDeployment = proxyJSON.bytecode + proxyDeploy.replace("0x", "");
 
-  const proxyAddress = await deploy(proxyDeployment);
+  const proxyAddress = await deploy(
+    api_secret_path,
+    api_key,
+    vault_account_id,
+    proxyDeployment
+  );
 
   // Wait for the contracts to be propagated inside Etherscan
   await new Promise((f) => setTimeout(f, 60000));
@@ -59,13 +100,13 @@ async function main() {
   await verify(implAddress, []);
   await verify(proxyAddress, proxyParameters);
 
-  console.log("Token address:", implAddress);
   console.log("Proxy address:", proxyAddress);
+  console.log("Implementation address (not needed usually):", implAddress);
 
   console.log(
     "Contracts verified. You can now go to contract at " +
       proxyAddress +
-      " and mark it as proxy"
+      " and mark it as proxy. That will be your contract to interact with."
   );
 }
 
