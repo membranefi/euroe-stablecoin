@@ -6,6 +6,7 @@ import { EUROStablecoin } from "../typechain/euro";
 
 Env.config({ path: "./.secrets.env" });
 
+// Used for deploying directly to Goerli
 async function main() {
   const accounts = await ethers.getSigners();
   const proxyOwner = accounts[0],
