@@ -20,22 +20,21 @@ export const verify = async (addr, constructorArguments: string[]) => {
 };
 
 // Deploy to FireBlocks. Returns the contract address
-export const deploy = async (bytecode: string) => {
-  const apiSecret = fs.readFileSync(
-    process.env.GOERLI_FIREBLOCKS_API_SECRET_PATH,
-    "utf8"
-  );
-  const fireblocksApiClient = new FireblocksSDK(
-    apiSecret,
-    process.env.GOERLI_FIREBLOCKS_API_KEY
-  );
+export const deploy = async (
+  api_secret_path: string,
+  api_key: string,
+  vault_account_id: string,
+  bytecode: string
+) => {
+  const apiSecret = fs.readFileSync(api_secret_path, "utf8");
+  const fireblocksApiClient = new FireblocksSDK(apiSecret, api_key);
 
   const create = await fireblocksApiClient.createTransaction({
     operation: TransactionOperation.CONTRACT_CALL,
     assetId: "ETH_TEST3",
     source: {
       type: PeerType.VAULT_ACCOUNT,
-      id: process.env.GOERLI_FIREBLOCKS_SOURCE_VAULT_ACCOUNT_INDEX,
+      id: vault_account_id,
     },
     destination: {
       type: PeerType.ONE_TIME_ADDRESS,
