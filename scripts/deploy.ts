@@ -24,8 +24,8 @@ async function main() {
     address_pauser = process.env.GOERLI_FIREBLOCKS_PROXYOWNER;
     address_unpauser = process.env.GOERLI_FIREBLOCKS_PROXYOWNER;
     address_minter = process.env.GOERLI_FIREBLOCKS_PROXYOWNER;
-    api_secret_path = process.env.GOERLI_FIREBLOCKS_API_SECRET_PATH;
-    api_key = process.env.GOERLI_FIREBLOCKS_API_KEY;
+    api_secret_path = process.env.GOERLI_FIREBLOCKS_API_SECRET_PATH_PROXYOWNER;
+    api_key = process.env.GOERLI_FIREBLOCKS_API_KEY_PROXYOWNER;
     vault_account_id = process.env.GOERLI_FIREBLOCKS_SOURCE_VAULT_ACCOUNT_ID;
     alchemy_api_key = process.env.GOERLI_ALCHEMY_APIKEY;
   } else if (network.name == "mainnet") {

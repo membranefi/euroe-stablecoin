@@ -11,6 +11,14 @@ import {
   MockTokenV2__factory,
 } from "../typechain/euro";
 import { ethers, waffle } from "hardhat";
+import {
+  addPermit,
+  burnWithPermit,
+  getMintChecksum,
+  getRoleBytes,
+  getRoleError,
+  singleMint,
+} from "../scripts/tools";
 
 const { loadFixture } = waffle;
 
@@ -209,7 +217,7 @@ describe("Token", () => {
       const deadline =
         (await ethers.provider.getBlock("latest")).timestamp + 5000;
 
-      await addPermit(userWithTokens, user1, value, deadline);
+      await addPermit(erc20, userWithTokens, user1, value, deadline);
 
       const transferFrom = () =>
         erc20
@@ -369,7 +377,7 @@ describe("Token", () => {
 
     describe("minter", () => {
       it("can mint", async () => {
-        const mint = () => singleMint(minter, user1.address, 5);
+        const mint = () => singleMint(erc20, minter, user1.address, 5);
 
         await expect(mint).to.changeTokenBalance(erc20, user1, 5);
       });
@@ -387,7 +395,7 @@ describe("Token", () => {
         const deadline =
           (await ethers.provider.getBlock("latest")).timestamp + 5000;
 
-        await burnWithPermit(userWithTokens, minter, 0, deadline);
+        await burnWithPermit(erc20, userWithTokens, minter, 0, deadline);
       });
     });
 
@@ -412,9 +420,9 @@ describe("Token", () => {
       });
 
       it("can't be minted to", async () => {
-        await expect(singleMint(minter, user1.address, 1)).to.revertedWith(
-          "Blocked user"
-        );
+        await expect(
+          singleMint(erc20, minter, user1.address, 1)
+        ).to.revertedWith("Blocked user");
       });
     });
 
@@ -449,14 +457,14 @@ describe("Token", () => {
           (await ethers.provider.getBlock("latest")).timestamp + 5000;
 
         await expect(
-          burnWithPermit(userWithTokens, user1, 0, deadline)
+          burnWithPermit(erc20, userWithTokens, user1, 0, deadline)
         ).to.revertedWith(getRoleError(user1.address, "MINTER_ROLE"));
       });
 
       it("can't mint", async () => {
-        await expect(singleMint(user1, user2.address, 10)).to.revertedWith(
-          getRoleError(user1.address, "MINTER_ROLE")
-        );
+        await expect(
+          singleMint(erc20, user1, user2.address, 10)
+        ).to.revertedWith(getRoleError(user1.address, "MINTER_ROLE"));
       });
 
       it("can't upgrade", async () => {
@@ -525,13 +533,13 @@ describe("Token", () => {
         (await ethers.provider.getBlock("latest")).timestamp + 5000;
 
       await expect(
-        burnWithPermit(userWithTokens, minter, 0, deadline)
+        burnWithPermit(erc20, userWithTokens, minter, 0, deadline)
       ).to.revertedWith("Pausable: paused");
     });
 
     it("prevents minting", async () => {
       await erc20.connect(pauser).pause();
-      await expect(singleMint(minter, user1.address, 1)).to.revertedWith(
+      await expect(singleMint(erc20, minter, user1.address, 1)).to.revertedWith(
         "Pausable: paused"
       );
     });
@@ -570,7 +578,7 @@ describe("Token", () => {
       const deadline =
         (await ethers.provider.getBlock("latest")).timestamp + 5000;
 
-      await addPermit(userWithTokens, minter, value, deadline);
+      await addPermit(erc20, userWithTokens, minter, value, deadline);
 
       const burn = () =>
         erc20.connect(minter).burnFrom(userWithTokens.address, 2);
@@ -583,7 +591,13 @@ describe("Token", () => {
       const deadline =
         (await ethers.provider.getBlock("latest")).timestamp + 5000;
 
-      const burn = burnWithPermit(userWithTokens, minter, value, deadline);
+      const burn = burnWithPermit(
+        erc20,
+        userWithTokens,
+        minter,
+        value,
+        deadline
+      );
 
       await expect(() => burn).to.changeTokenBalance(erc20, userWithTokens, -2);
     });
@@ -594,7 +608,7 @@ describe("Token", () => {
         (await ethers.provider.getBlock("latest")).timestamp - 5000;
 
       await expect(
-        addPermit(userWithTokens, minter, value, deadline)
+        addPermit(erc20, userWithTokens, minter, value, deadline)
       ).to.revertedWith("ERC20Permit: expired deadline");
     });
 
@@ -619,7 +633,7 @@ describe("Token", () => {
   describe("Minting", () => {
     it("single mint", async () => {
       await expect(() =>
-        singleMint(minter, user1.address, 2)
+        singleMint(erc20, minter, user1.address, 2)
       ).to.changeTokenBalance(erc20, user1, 2);
       await expect(await erc20.totalSupply()).to.equal(mintAmount + 2);
     });
@@ -715,7 +729,7 @@ describe("Token", () => {
         .connect(blocklister)
         .grantRole(getRoleBytes("BLOCKED_ROLE"), user1.address);
 
-      await expect(singleMint(minter, user1.address, 2)).to.revertedWith(
+      await expect(singleMint(erc20, minter, user1.address, 2)).to.revertedWith(
         "Blocked user"
       );
     });
@@ -915,101 +929,4 @@ describe("Token", () => {
       ).to.revertedWith("Blocked user");
     });
   });
-
-  const getRoleBytes = (role: string) => {
-    if (role == "DEFAULT_ADMIN_ROLE") {
-      return ethers.constants.HashZero;
-    }
-    const res = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(role));
-    return res;
-  };
-
-  const getRoleError = (address: string, role: string) => {
-    const error =
-      "AccessControl: account " +
-      address.toLowerCase() +
-      " is missing role " +
-      getRoleBytes(role);
-    return error;
-  };
-
-  const singleMint = (
-    signer: SignerWithAddress,
-    target: string,
-    amount: number
-  ) => {
-    // Use a dummy id
-    const id = 1;
-    const hash = getMintChecksum([target], [amount], id);
-    return erc20.connect(signer).mintSet([target], [amount], id, hash);
-  };
-
-  const getMintChecksum = (
-    targets: string[],
-    amounts: number[],
-    id: number
-  ) => {
-    const encoded = ethers.utils.defaultAbiCoder.encode(
-      ["address[]", "uint256[]", "uint256"],
-      [targets, amounts, id]
-    );
-    const hash = ethers.utils.keccak256(encoded);
-    return hash;
-  };
-
-  const addPermit = async (
-    owner: SignerWithAddress,
-    spender: SignerWithAddress,
-    amount: number,
-    deadline: number
-  ) => {
-    const result = await signERC2612Permit(
-      owner,
-      erc20.address,
-      owner.address,
-      spender.address,
-      amount,
-      deadline
-    );
-
-    await erc20
-      .connect(owner)
-      .permit(
-        owner.address,
-        spender.address,
-        amount,
-        deadline,
-        result.v,
-        result.r,
-        result.s
-      );
-  };
-
-  const burnWithPermit = async (
-    owner: SignerWithAddress,
-    spender: SignerWithAddress,
-    amount: number,
-    deadline: number
-  ) => {
-    const result = await signERC2612Permit(
-      owner,
-      erc20.address,
-      owner.address,
-      spender.address,
-      amount,
-      deadline
-    );
-
-    await erc20
-      .connect(spender)
-      .burnFromWithPermit(
-        owner.address,
-        spender.address,
-        amount,
-        deadline,
-        result.v,
-        result.r,
-        result.s
-      );
-  };
 });
