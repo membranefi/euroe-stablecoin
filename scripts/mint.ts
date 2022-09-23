@@ -7,7 +7,10 @@ import { EUROStablecoin } from "../typechain/euro";
 import { getMintChecksum } from "./tools";
 import { network } from "hardhat";
 
-const PROXY_ADDRESS = "0xfADabA2a4E604D19388365E4a8486745eeDe8B59";
+const PROXY_ADDRESS = "0xfADabA2a4E604D19388365E4a8486745eeDe8B59"; // Address of the token contract (proxy)
+const MINT_TARGET = "0xa084ab564149ea4a2113c29Ab1772B2F0F874a66"; // Who gets the tokens
+const MINT_AMOUNT = 8; // How much to mint
+const EXTERNAL_MINT_ID = 16; // ID that probably comes from database
 
 let api_secret_path: string, api_key: string, vault_account_id: string;
 
@@ -56,15 +59,16 @@ async function main() {
     ethers.getDefaultProvider(usedChain)
   ) as EUROStablecoin;
 
-  const target = "0xa084ab564149ea4a2113c29Ab1772B2F0F874a66";
-  const mintAmount = 8;
-  const externalId = 16;
-  const checksum = await getMintChecksum([target], [mintAmount], externalId);
+  const checksum = await getMintChecksum(
+    [MINT_TARGET],
+    [MINT_AMOUNT],
+    EXTERNAL_MINT_ID
+  );
 
   const tx: PopulatedTransaction = await contract.populateTransaction.mintSet(
-    [target],
-    [mintAmount],
-    externalId,
+    [MINT_TARGET],
+    [MINT_AMOUNT],
+    EXTERNAL_MINT_ID,
     checksum
   );
 
