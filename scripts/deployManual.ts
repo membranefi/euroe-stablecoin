@@ -8,6 +8,11 @@ Env.config({ path: "./.secrets.env" });
 
 // Used for deploying directly to Goerli
 async function main() {
+  const Fact = await hre.ethers.getContractFactory("Test");
+  console.log("starting deploy");
+  const inst = await Fact.deploy();
+  console.log("deployed", inst);
+  /* 
   const accounts = await ethers.getSigners();
   const proxyOwner = accounts[0],
     admin = proxyOwner,
@@ -35,9 +40,9 @@ async function main() {
 
   const implementation = await proxy.getImplementation();
   console.log("Token address:", implementation);
-  console.log("Proxy address:", proxy.address);
+  console.log("Proxy address:", proxy.address); */
 
-  if (network.name !== "hardhat" && network.name !== "localhost") {
+  /* if (network.name !== "hardhat" && network.name !== "localhost") {
     console.log("Deployments done, waiting for etherscan verifications");
     // Wait for the contracts to be propagated inside Etherscan
     await new Promise((f) => setTimeout(f, 60000));
@@ -59,7 +64,7 @@ async function main() {
         proxy.address +
         " and mark it as proxy"
     );
-  }
+  } */
 }
 
 // We recommend this pattern to be able to use async/await everywhere

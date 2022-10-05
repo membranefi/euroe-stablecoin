@@ -31,7 +31,7 @@ export const deploy = async (
 ) => {
   const apiSecret = fs.readFileSync(api_secret_path, "utf8");
   const fireblocksApiClient = new FireblocksSDK(apiSecret, api_key);
-
+  console.log("starting deploy");
   const create = await fireblocksApiClient.createTransaction({
     operation: TransactionOperation.CONTRACT_CALL,
     assetId: "ETH_TEST3",
@@ -52,7 +52,7 @@ export const deploy = async (
     },
   });
 
-  console.log("Sending transaction for signing to FB");
+  console.log("Sending transaction for signing to FB", create);
 
   // https://dev.to/jakubkoci/polling-with-async-await-25p4
   async function poll(fn, fnCondition, ms) {
@@ -89,6 +89,10 @@ export const deploy = async (
     const tx = (await ethers.provider.getTransaction(
       txData.txHash
     )) as TransactionResponse & TransactionResponseExtended;
+
+    if (!tx) {
+      return "";
+    }
     return tx.creates;
   };
 
