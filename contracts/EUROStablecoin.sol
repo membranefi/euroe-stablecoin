@@ -86,6 +86,13 @@ contract EUROStablecoin is
         return 6;
     }
 
+    function mint(address account, uint256 amount)
+        external
+        onlyRole(MINTER_ROLE)
+    {
+        _mint(account, amount);
+    }
+
     function pause() external onlyRole(PAUSER_ROLE) {
         _pause();
     }
