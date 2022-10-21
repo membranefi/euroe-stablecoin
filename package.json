@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@openzeppelin/contracts": "4.7.1",
-    "@openzeppelin/contracts-upgradeable": "4.7.1"
+    "@openzeppelin/contracts-upgradeable": "4.7.3"
   },
   "devDependencies": {
     "@fireblocks/hardhat-fireblocks": "^0.0.9",
