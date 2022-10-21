@@ -86,13 +86,6 @@ contract EUROStablecoin is
         return 6;
     }
 
-    function mint(address account, uint256 amount)
-        external
-        onlyRole(MINTER_ROLE)
-    {
-        _mint(account, amount);
-    }
-
     function pause() external onlyRole(PAUSER_ROLE) {
         _pause();
     }
@@ -138,30 +131,11 @@ contract EUROStablecoin is
         super.burnFrom(owner, value);
     }
 
-    /**
-     * @dev Performs a batch of mints
-     * @param targets Array of addresses for which to mint
-     * @param amounts Array of amounts to mint for the corresponding addresses
-     * @param id An external identifier given for the minting set
-     * @param checksum A checksum to make sure none of the input data has changed
-     */
-    function mintSet(
-        address[] calldata targets,
-        uint256[] calldata amounts,
-        uint256 id,
-        bytes32 checksum
-    ) external onlyRole(MINTER_ROLE) {
-        require(targets.length == amounts.length, "Unmatching mint lengths");
-        require(targets.length > 0, "Nothing to mint");
-
-        bytes32 calculated = keccak256(abi.encode(targets, amounts, id));
-        require(calculated == checksum, "Checksum mismatch");
-
-        for (uint256 i = 0; i < targets.length; i++) {
-            require(amounts[i] > 0, "Mint amount not greater than 0");
-            _mint(targets[i], amounts[i]);
-        }
-        emit MintingSetCompleted(id);
+    function mint(address account, uint256 amount)
+        external
+        onlyRole(MINTER_ROLE)
+    {
+        _mint(account, amount);
     }
 
     /**

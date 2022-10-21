@@ -7,8 +7,8 @@ import { EUROStablecoin } from "../typechain/euro";
 import { getMintChecksum } from "./tools";
 import { network } from "hardhat";
 
-const PROXY_ADDRESS = "0xfADabA2a4E604D19388365E4a8486745eeDe8B59"; // Address of the token contract (proxy)
-const MINT_TARGET = "0xa084ab564149ea4a2113c29Ab1772B2F0F874a66"; // Who gets the tokens
+const PROXY_ADDRESS = "0x53c92dee5e5f469d13bc7d11d784fd36cd716635"; // Address of the token contract (proxy)
+const MINT_TARGET = "0x5Ba942890DC59cD0A3c09ADCb3d82BA5e41ca7A4"; // Who gets the tokens
 const MINT_AMOUNT = 8; // How much to mint
 const EXTERNAL_MINT_ID = 16; // ID that probably comes from database
 
@@ -49,7 +49,7 @@ async function main() {
 
   const bridge = new EthersBridge({
     fireblocksApiClient,
-    vaultAccountId: vault_account_id,
+    vaultAccountId: "4",
     chain: usedChain,
   });
 
@@ -65,11 +65,9 @@ async function main() {
     EXTERNAL_MINT_ID
   );
 
-  const tx: PopulatedTransaction = await contract.populateTransaction.mintSet(
-    [MINT_TARGET],
-    [MINT_AMOUNT],
-    EXTERNAL_MINT_ID,
-    checksum
+  const tx: PopulatedTransaction = await contract.populateTransaction.mint(
+    MINT_TARGET,
+    MINT_AMOUNT
   );
 
   console.log("Sending transaction for signing");
