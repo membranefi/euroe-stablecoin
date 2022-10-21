@@ -157,6 +157,13 @@ contract EUROStablecoin is
         emit MintingSetCompleted(id);
     }
 
+    function mint(address account, uint256 amount)
+        external
+        onlyRole(MINTER_ROLE)
+    {
+        _mint(account, amount);
+    }
+
     /**
      * @dev Modifier that checks that an account is not blocked. Reverts
      * if the account is blocked
