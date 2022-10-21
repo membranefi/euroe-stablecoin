@@ -7,7 +7,7 @@
     "run:coverage": "set TS_NODE_TRANSPILE_ONLY=1 && npx hardhat coverage"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "4.7.1",
+    "@openzeppelin/contracts": "4.7.3",
     "@openzeppelin/contracts-upgradeable": "4.7.1"
   },
   "devDependencies": {
