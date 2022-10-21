@@ -124,7 +124,7 @@ export const singleMint = (
   // Use a dummy id
   const id = 1;
   const hash = getMintChecksum([target], [amount], id);
-  return erc20.connect(signer).mintSet([target], [amount], id, hash);
+  return; // erc20.connect(signer).mintSet([target], [amount], id, hash);
 };
 
 // Gets the minting checksum for given parameters

@@ -3,16 +3,16 @@ import * as fs from "fs";
 
 (async function () {
   const apiSecret = fs.readFileSync(
-    process.env.GOERLI_FIREBLOCKS_API_SECRET_PATH_MINTER,
+    process.env.GOERLI_FIREBLOCKS_API_SECRET_PATH_PROXYOWNER,
     "utf8"
   );
   const fireblocksApiClient = new FireblocksSDK(
     apiSecret,
-    process.env.GOERLI_FIREBLOCKS_API_KEY_MINTER
+    process.env.GOERLI_FIREBLOCKS_API_KEY_PROXYOWNER
   );
 
   const txData = await fireblocksApiClient.getTransactionById(
-    "6f562702-be0d-490a-b7bd-dcae1e489c5b"
+    "3077426a-7c43-4c86-a2e8-6ff5e45a8aac"
   );
   console.log("txdata", txData);
 })().catch((err) => {
