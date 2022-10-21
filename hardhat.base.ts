@@ -8,8 +8,18 @@ import "@openzeppelin/hardhat-upgrades";
 import { HardhatUserConfig, NetworksUserConfig } from "hardhat/types";
 import Env from "dotenv";
 import "@nomiclabs/hardhat-etherscan";
+import "@fireblocks/hardhat-fireblocks";
+import "@openzeppelin/hardhat-upgrades";
 
 Env.config({ path: "./.secrets.env" });
+
+if (
+  !process.env.GOERLI_FIREBLOCKS_API_KEY_PROXYOWNER ||
+  !process.env.GOERLI_FIREBLOCKS_API_SECRET_PATH_PROXYOWNER ||
+  !process.env.GOERLI_FIREBLOCKS_SOURCE_VAULT_ACCOUNT_ID
+) {
+  throw "Invalid hardhat config";
+}
 
 let networks: NetworksUserConfig = {
   /*   mainnet: {
@@ -19,10 +29,18 @@ let networks: NetworksUserConfig = {
     gasPrice: 200 * 1_000_000_000,
     chainId: 1,
   }, */
-  goerli: {
+  goerliDirect: {
     url: Networks.goerli.providerURL,
     accounts: Networks.goerli.privateKeys,
     chainId: 5,
+  },
+  goerliFB: {
+    url: "https://rpc.ankr.com/eth_goerli",
+    fireblocks: {
+      privateKey: process.env.GOERLI_FIREBLOCKS_API_SECRET_PATH_PROXYOWNER,
+      apiKey: process.env.GOERLI_FIREBLOCKS_API_KEY_PROXYOWNER,
+      vaultAccountIds: process.env.GOERLI_FIREBLOCKS_SOURCE_VAULT_ACCOUNT_ID,
+    },
   },
 };
 const HARDHAT_NETWORK_ID = 31337;

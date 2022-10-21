@@ -1,7 +1,4 @@
 import hre, { ethers, network } from "hardhat";
-import * as fs from "fs";
-import { FireblocksSDK, PeerType, TransactionOperation } from "fireblocks-sdk";
-import { TransactionResponse } from "@ethersproject/abstract-provider";
 import { MockToken } from "../typechain/euro";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { signERC2612Permit } from "eth-permit";
@@ -20,81 +17,6 @@ export const verify = async (addr, constructorArguments: string[]) => {
       throw ex;
     }
   }
-};
-
-// Deploy to FireBlocks. Returns the contract address
-export const deploy = async (
-  api_secret_path: string,
-  api_key: string,
-  vault_account_id: string,
-  bytecode: string
-) => {
-  const apiSecret = fs.readFileSync(api_secret_path, "utf8");
-  const fireblocksApiClient = new FireblocksSDK(apiSecret, api_key);
-
-  const create = await fireblocksApiClient.createTransaction({
-    operation: TransactionOperation.CONTRACT_CALL,
-    assetId: "ETH_TEST3",
-    source: {
-      type: PeerType.VAULT_ACCOUNT,
-      id: vault_account_id,
-    },
-    destination: {
-      type: PeerType.ONE_TIME_ADDRESS,
-      oneTimeAddress: {
-        address: "0x0",
-      },
-    },
-    note: "Contract deployment transaction",
-    amount: "0",
-    extraParameters: {
-      contractCallData: bytecode,
-    },
-  });
-
-  console.log("Sending transaction for signing to FB");
-
-  // https://dev.to/jakubkoci/polling-with-async-await-25p4
-  async function poll(fn, fnCondition, ms) {
-    function wait(ms) {
-      return new Promise((resolve) => {
-        console.log(`waiting ${ms} ms for contract to be deployed...`);
-        setTimeout(resolve, ms);
-      });
-    }
-
-    let result = await fn();
-    while (fnCondition(result)) {
-      await wait(ms);
-      result = await fn();
-    }
-    return result;
-  }
-
-  const checkContrAddress = async () => {
-    if (!create || !create.id) {
-      return "";
-    }
-
-    const txData = await fireblocksApiClient.getTransactionById(create.id);
-
-    if (!txData.txHash) {
-      return "";
-    }
-
-    interface TransactionResponseExtended {
-      creates: string;
-    }
-
-    const tx = (await ethers.provider.getTransaction(
-      txData.txHash
-    )) as TransactionResponse & TransactionResponseExtended;
-    return tx.creates;
-  };
-
-  const addr = await poll(checkContrAddress, (val) => !val, 5000);
-
-  return addr;
 };
 
 export const getRoleBytes = (role: string) => {
