@@ -2,7 +2,7 @@ import { ethers, network, upgrades } from "hardhat";
 import Env from "dotenv";
 import hre from "hardhat";
 import "@openzeppelin/hardhat-upgrades";
-import { EUROStablecoin } from "../typechain/euro";
+import { EUROe } from "../typechain/euroe";
 
 Env.config({ path: "./.secrets.env" });
 
@@ -16,7 +16,7 @@ async function main() {
     unpauser = proxyOwner,
     minter = proxyOwner;
 
-  const Token = await ethers.getContractFactory("EUROStablecoin");
+  const Token = await ethers.getContractFactory("EUROe");
   const deployment = await upgrades.deployProxy(
     Token,
     [
@@ -31,7 +31,7 @@ async function main() {
       kind: "uups",
     }
   );
-  const proxy = (await deployment.deployed()) as EUROStablecoin;
+  const proxy = (await deployment.deployed()) as EUROe;
 
   const implementation = await proxy.getImplementation();
   console.log("Token address:", implementation);

@@ -2,7 +2,7 @@
   "scripts": {
     "generate:typechain": "npm run generate:oz-typechain && npm run generate:own-typechain",
     "generate:oz-typechain": "npx typechain --target ethers-v5 --out-dir typechain/openzeppelin \"./artifacts/@openzeppelin/**/+([a-zA-Z0-9_]).json\"",
-    "generate:own-typechain": "npx typechain --target ethers-v5 --out-dir typechain/euro \"./artifacts/contracts/**/+([a-zA-Z0-9_]).json\"",
+    "generate:own-typechain": "npx typechain --target ethers-v5 --out-dir typechain/euroe \"./artifacts/contracts/**/+([a-zA-Z0-9_]).json\"",
     "run:slither": "slither . --filter-paths \"openzeppelin\" --print human-summary",
     "run:coverage": "set TS_NODE_TRANSPILE_ONLY=1 && npx hardhat coverage"
   },

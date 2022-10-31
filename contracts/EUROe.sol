@@ -12,10 +12,10 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 
 /**
-@title A stablecoin ERC20 token contract for the EURO project
+@title A stablecoin ERC20 token contract for the EUROe project
 @author Membrane Finance
  */
-contract EUROStablecoin is
+contract EUROe is
     Initializable,
     ERC20Upgradeable,
     ERC20BurnableUpgradeable,
@@ -61,7 +61,7 @@ contract EUROStablecoin is
         address unpauser,
         address minter
     ) external initializer {
-        __ERC20_init("EURO Stablecoin", "eEURO");
+        __ERC20_init("EURO Stablecoin", "EUROe");
         __ERC20Burnable_init();
         __Pausable_init();
         __AccessControl_init();

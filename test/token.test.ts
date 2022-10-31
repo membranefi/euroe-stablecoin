@@ -9,7 +9,7 @@ import {
   MockToken,
   MockTokenV2,
   MockTokenV2__factory,
-} from "../typechain/euro";
+} from "../typechain/euroe";
 import { ethers, waffle } from "hardhat";
 import {
   addPermit,
@@ -114,7 +114,7 @@ describe("Token", () => {
 
   describe("Basic ERC-20 functionality", () => {
     it("symbol()", async () => {
-      expect(await erc20.symbol()).to.equal("eEURO");
+      expect(await erc20.symbol()).to.equal("EUROe");
     });
 
     it("decimals()", async () => {
