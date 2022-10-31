@@ -1,6 +1,6 @@
-# EURO Stablecoin
+# EUROe
 
-Smart contracts for the Euro-backed stablecoin project, eEURO.
+Smart contracts for the Euro-backed stablecoin project, EUROe.
 
 ## Functionalities
 

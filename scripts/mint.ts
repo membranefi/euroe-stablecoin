@@ -2,8 +2,8 @@ import { FireblocksSDK, PeerType, TransactionOperation } from "fireblocks-sdk";
 import { EthersBridge, Chain } from "fireblocks-defi-sdk";
 import { ethers, PopulatedTransaction } from "ethers";
 import * as fs from "fs";
-import euroJSON from "../artifacts/contracts/EUROStablecoin.sol/EUROStablecoin.json";
-import { EUROStablecoin } from "../typechain/euro";
+import euroJSON from "../artifacts/contracts/EUROe.sol/EUROe.json";
+import { EUROe } from "../typechain/euroe";
 import { getMintChecksum } from "./tools";
 import { network } from "hardhat";
 
@@ -57,7 +57,7 @@ async function main() {
     PROXY_ADDRESS,
     euroJSON.abi,
     ethers.getDefaultProvider(usedChain)
-  ) as EUROStablecoin;
+  ) as EUROe;
 
   const checksum = await getMintChecksum(
     [MINT_TARGET],

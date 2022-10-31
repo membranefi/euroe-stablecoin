@@ -1,5 +1,5 @@
 import hre, { ethers, network } from "hardhat";
-import { MockToken } from "../typechain/euro";
+import { MockToken } from "../typechain/euroe";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { signERC2612Permit } from "eth-permit";
 

@@ -1,6 +1,6 @@
 import { ethers, network, upgrades } from "hardhat";
 import { verify } from "./tools";
-import { EUROStablecoin } from "../typechain/euro";
+import { EUROe } from "../typechain/euroe";
 
 // Used for deploying to FireBlocks
 async function main() {
@@ -51,12 +51,12 @@ async function main() {
     address_unpauser,
     address_minter,
   ];
-  const ImplementationFact = await ethers.getContractFactory("EUROStablecoin");
+  const ImplementationFact = await ethers.getContractFactory("EUROe");
   const proxy = (await upgrades.deployProxy(
     ImplementationFact,
     proxyParameters,
     { kind: "uups" }
-  )) as EUROStablecoin;
+  )) as EUROe;
   await proxy.deployed();
 
   const implAddress = await proxy.getImplementation();

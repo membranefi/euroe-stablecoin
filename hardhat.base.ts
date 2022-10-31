@@ -73,7 +73,7 @@ const hardhatConfig: HardhatUserConfig = {
   },
 
   typechain: {
-    outDir: "typechain/euro",
+    outDir: "typechain/euroe",
     target: "ethers-v5",
   },
   solidity: {

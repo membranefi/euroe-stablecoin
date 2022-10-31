@@ -2,10 +2,10 @@
 // Used for adding features for unit tests to the normal token
 pragma solidity ^0.8.4;
 
-import "../EUROStablecoin.sol";
+import "../EUROe.sol";
 
 //slither-disable-next-line unprotected-upgrade
-contract MockToken is EUROStablecoin {
+contract MockToken is EUROe {
     function freeMint(address to, uint256 amount) external {
         _mint(to, amount);
     }

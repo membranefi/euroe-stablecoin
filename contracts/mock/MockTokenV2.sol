@@ -2,8 +2,8 @@
 // Used for testing upgradability
 pragma solidity ^0.8.4;
 
-import "../EUROStablecoin.sol";
+import "../EUROe.sol";
 
-contract MockTokenV2 is EUROStablecoin {
+contract MockTokenV2 is EUROe {
     bool public isThisNewVersion = true;
 }
