@@ -14,7 +14,9 @@ async function main() {
     blocklister = proxyOwner,
     pauser = proxyOwner,
     unpauser = proxyOwner,
-    minter = proxyOwner;
+    minter = proxyOwner,
+    rescuer = proxyOwner,
+    burner = proxyOwner;
 
   const Token = await ethers.getContractFactory("EUROe");
   const deployment = await upgrades.deployProxy(
@@ -26,6 +28,8 @@ async function main() {
       pauser.address,
       unpauser.address,
       minter.address,
+      rescuer.address,
+      burner.address,
     ],
     {
       kind: "uups",

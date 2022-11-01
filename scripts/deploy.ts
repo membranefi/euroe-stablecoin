@@ -9,7 +9,9 @@ async function main() {
     address_blocklister: string,
     address_pauser: string,
     address_unpauser: string,
-    address_minter: string;
+    address_minter: string,
+    address_rescuer: string,
+    address_burner: string;
 
   if (network.name == "goerliFB") {
     address_proxyOwner = process.env.GOERLI_FIREBLOCKS_PROXYOWNER;
@@ -18,6 +20,8 @@ async function main() {
     address_pauser = process.env.GOERLI_FIREBLOCKS_PROXYOWNER;
     address_unpauser = process.env.GOERLI_FIREBLOCKS_PROXYOWNER;
     address_minter = process.env.GOERLI_FIREBLOCKS_MINTER;
+    address_rescuer = process.env.GOERLI_FIREBLOCKS_RESCUER;
+    address_burner = process.env.GOERLI_FIREBLOCKS_BURNER;
   } else if (network.name == "mainnet") {
     address_proxyOwner = process.env.MAINNET_FIREBLOCKS_PROXYOWNER;
     address_admin = process.env.MAINNET_FIREBLOCKS_PROXYOWNER;
@@ -25,6 +29,8 @@ async function main() {
     address_pauser = process.env.MAINNET_FIREBLOCKS_PROXYOWNER;
     address_unpauser = process.env.MAINNET_FIREBLOCKS_PROXYOWNER;
     address_minter = process.env.MAINNET_FIREBLOCKS_MINTER;
+    address_rescuer = process.env.MAINNET_FIREBLOCKS_RESCUER;
+    address_burner = process.env.MAINNET_FIREBLOCKS_BURNER;
   }
 
   if (network.name == "hardhat" || network.name == "localhost") {
@@ -38,7 +44,9 @@ async function main() {
     !address_blocklister ||
     !address_pauser ||
     !address_unpauser ||
-    !address_minter
+    !address_minter ||
+    !address_rescuer ||
+    !address_burner
   ) {
     throw "Invalid configuration";
   }
@@ -50,6 +58,8 @@ async function main() {
     address_pauser,
     address_unpauser,
     address_minter,
+    address_rescuer,
+    address_burner,
   ];
   const ImplementationFact = await ethers.getContractFactory("EUROe");
   const proxy = (await upgrades.deployProxy(

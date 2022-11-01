@@ -7,7 +7,9 @@ import { EUROe } from "../typechain/euroe";
 import { getMintChecksum } from "./tools";
 import { network } from "hardhat";
 
-const PROXY_ADDRESS = "0xfADabA2a4E604D19388365E4a8486745eeDe8B59"; // Address of the token contract (proxy)
+// This script is used for manually testing minting
+
+const PROXY_ADDRESS = "0x8f21060D05DF9BcA475Ba23eA26AcCCab9944a2e"; // Address of the token contract (proxy)
 const MINT_TARGET = "0xa084ab564149ea4a2113c29Ab1772B2F0F874a66"; // Who gets the tokens
 const MINT_AMOUNT = 8; // How much to mint
 const EXTERNAL_MINT_ID = 16; // ID that probably comes from database
