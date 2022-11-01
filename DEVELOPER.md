@@ -22,10 +22,10 @@ For static analysis we use Slither. When it's [installed locally](https://github
 
 ## Deployment
 
-The contracts can be deployed either directly through Hardhat or through a Fireblocks integration. This section explains Hardhat deployment - Fireblocks deployment is documented elsewhere. Hardhat deployment also verifies the contracts in Etherscan.
+The contracts can be deployed either directly through Hardhat or through a Fireblocks integration (with the help of Hardhat). This section explains direct Hardhat deployment - Fireblocks deployment is documented elsewhere. Hardhat deployment also verifies the contracts in Etherscan.
 
 Steps:
 1. Set your environment variables in `.secrets.env`. You can see `.secrets.env.example` for the format. Note that you don't need any of the Fireblocks-related settings when deploying directly with Hardhat
-1. Deploy: `npx hardhat run scripts/deployManual.ts --network goerli` 
+1. Deploy: `npx hardhat run scripts/deployManual.ts --network goerliDirect` 
 1. Go to Etherscan and open the address given by the deployment script. Mark the contract as proxy in Etherscan.
 
