@@ -25,6 +25,16 @@ const { loadFixture } = waffle;
 const TOKEN_DECIMALS = 6;
 const mintAmount = 10;
 
+const PROXYOWNER_ROLE = "PROXYOWNER_ROLE";
+const BLOCKLISTER_ROLE = "BLOCKLISTER_ROLE";
+const PAUSER_ROLE = "PAUSER_ROLE";
+const UNPAUSER_ROLE = "UNPAUSER_ROLE";
+const MINTER_ROLE = "MINTER_ROLE";
+const BLOCKED_ROLE = "BLOCKED_ROLE";
+const RESCUER_ROLE = "RESCUER_ROLE";
+const BURNER_ROLE = "BURNER_ROLE";
+const DEFAULT_ADMIN_ROLE = "DEFAULT_ADMIN_ROLE";
+
 describe("Token", () => {
   async function fixture() {
     const accounts = await ethers.getSigners();
@@ -33,11 +43,13 @@ describe("Token", () => {
       blocklister = accounts[2],
       pauser = accounts[3],
       unpauser = accounts[4],
-      minter = accounts[5];
+      minter = accounts[5],
+      rescuer = accounts[6],
+      burner = accounts[7];
 
-    const userWithTokens = accounts[6];
-    const user1 = accounts[7];
-    const user2 = accounts[8];
+    const userWithTokens = accounts[8];
+    const user1 = accounts[9];
+    const user2 = accounts[10];
 
     const Token = await ethers.getContractFactory("MockToken");
     const deployment = await upgrades.deployProxy(
@@ -49,6 +61,8 @@ describe("Token", () => {
         pauser.address,
         unpauser.address,
         minter.address,
+        rescuer.address,
+        burner.address,
       ],
       {
         kind: "uups",
@@ -75,6 +89,8 @@ describe("Token", () => {
         pauser,
         unpauser,
         minter,
+        rescuer,
+        burner,
         userWithTokens,
         user1,
         user2,
@@ -88,6 +104,8 @@ describe("Token", () => {
     pauser: SignerWithAddress,
     unpauser: SignerWithAddress,
     minter: SignerWithAddress,
+    rescuer: SignerWithAddress,
+    burner: SignerWithAddress,
     userWithTokens: SignerWithAddress,
     user1: SignerWithAddress,
     user2: SignerWithAddress;
@@ -107,6 +125,8 @@ describe("Token", () => {
     pauser = r.users.pauser;
     unpauser = r.users.unpauser;
     minter = r.users.minter;
+    rescuer = r.users.rescuer;
+    burner = r.users.burner;
     userWithTokens = r.users.userWithTokens;
     user1 = r.users.user1;
     user2 = r.users.user2;
@@ -241,12 +261,14 @@ describe("Token", () => {
       // Checks whether the address has exactly one role
       const hasOneRole = async (address: string) => {
         const values = [
-          await hasRole("PROXYOWNER_ROLE", address),
-          await hasRole("DEFAULT_ADMIN_ROLE", address),
-          await hasRole("BLOCKLISTER_ROLE", address),
-          await hasRole("PAUSER_ROLE", address),
-          await hasRole("UNPAUSER_ROLE", address),
-          await hasRole("MINTER_ROLE", address),
+          await hasRole(PROXYOWNER_ROLE, address),
+          await hasRole(DEFAULT_ADMIN_ROLE, address),
+          await hasRole(BLOCKLISTER_ROLE, address),
+          await hasRole(PAUSER_ROLE, address),
+          await hasRole(UNPAUSER_ROLE, address),
+          await hasRole(MINTER_ROLE, address),
+          await hasRole(RESCUER_ROLE, address),
+          await hasRole(BURNER_ROLE, address),
         ];
         return values.filter((v) => v).length == 1;
       };
@@ -257,25 +279,24 @@ describe("Token", () => {
       expect(await hasOneRole(pauser.address)).to.true;
       expect(await hasOneRole(unpauser.address)).to.true;
       expect(await hasOneRole(minter.address)).to.true;
+      expect(await hasOneRole(rescuer.address)).to.true;
+      expect(await hasOneRole(burner.address)).to.true;
     });
 
     it("Preassigned users have their assigned role", async () => {
-      expect(await hasRole("PROXYOWNER_ROLE", proxyOwner.address)).to.true;
-      expect(await hasRole("DEFAULT_ADMIN_ROLE", admin.address)).to.true;
-      expect(await hasRole("BLOCKLISTER_ROLE", blocklister.address)).to.true;
-      expect(await hasRole("PAUSER_ROLE", pauser.address)).to.true;
-      expect(await hasRole("UNPAUSER_ROLE", unpauser.address)).to.true;
-      expect(await hasRole("MINTER_ROLE", minter.address)).to.true;
+      expect(await hasRole(PROXYOWNER_ROLE, proxyOwner.address)).to.true;
+      expect(await hasRole(DEFAULT_ADMIN_ROLE, admin.address)).to.true;
+      expect(await hasRole(BLOCKLISTER_ROLE, blocklister.address)).to.true;
+      expect(await hasRole(PAUSER_ROLE, pauser.address)).to.true;
+      expect(await hasRole(UNPAUSER_ROLE, unpauser.address)).to.true;
+      expect(await hasRole(MINTER_ROLE, minter.address)).to.true;
+      expect(await hasRole(RESCUER_ROLE, rescuer.address)).to.true;
+      expect(await hasRole(BURNER_ROLE, burner.address)).to.true;
     });
   });
 
   describe("Role access restrictions: ", () => {
     describe("proxyOwner", () => {
-      it("can call token rescue", async () => {
-        await erc20
-          .connect(proxyOwner)
-          .rescueERC20(dummytoken.address, user1.address, 0);
-      });
       it("is authorized to upgrade", async () => {
         await erc20.connect(proxyOwner).checkAuthorizeUpgrade();
       });
@@ -297,30 +318,36 @@ describe("Token", () => {
             .false;
         };
         it("admin", async () => {
-          await checkRole("DEFAULT_ADMIN_ROLE");
+          await checkRole(DEFAULT_ADMIN_ROLE);
         });
         it("proxyOwner", async () => {
-          await checkRole("PROXYOWNER_ROLE");
+          await checkRole(PROXYOWNER_ROLE);
         });
         it("blocklister", async () => {
-          await checkRole("BLOCKLISTER_ROLE");
+          await checkRole(BLOCKLISTER_ROLE);
         });
         it("pauser", async () => {
-          await checkRole("PAUSER_ROLE");
+          await checkRole(PAUSER_ROLE);
         });
         it("unpauser", async () => {
-          await checkRole("UNPAUSER_ROLE");
+          await checkRole(UNPAUSER_ROLE);
         });
         it("minter", async () => {
-          await checkRole("MINTER_ROLE");
+          await checkRole(MINTER_ROLE);
+        });
+        it("rescuer", async () => {
+          await checkRole(RESCUER_ROLE);
+        });
+        it("burner", async () => {
+          await checkRole(BURNER_ROLE);
         });
       });
       it("can't modify blocked role", async () => {
         await expect(
           erc20
             .connect(admin)
-            .grantRole(getRoleBytes("BLOCKED_ROLE"), user1.address)
-        ).to.be.revertedWith(getRoleError(admin.address, "BLOCKLISTER_ROLE"));
+            .grantRole(getRoleBytes(BLOCKED_ROLE), user1.address)
+        ).to.be.revertedWith(getRoleError(admin.address, BLOCKLISTER_ROLE));
       });
     });
 
@@ -328,22 +355,22 @@ describe("Token", () => {
       it("can block", async () => {
         await erc20
           .connect(blocklister)
-          .grantRole(getRoleBytes("BLOCKED_ROLE"), user1.address);
+          .grantRole(getRoleBytes(BLOCKED_ROLE), user1.address);
 
-        expect(await erc20.hasRole(getRoleBytes("BLOCKED_ROLE"), user1.address))
+        expect(await erc20.hasRole(getRoleBytes(BLOCKED_ROLE), user1.address))
           .to.true;
       });
 
       it("can unblock", async () => {
         await erc20
           .connect(blocklister)
-          .grantRole(getRoleBytes("BLOCKED_ROLE"), user1.address);
+          .grantRole(getRoleBytes(BLOCKED_ROLE), user1.address);
 
         await erc20
           .connect(blocklister)
-          .revokeRole(getRoleBytes("BLOCKED_ROLE"), user1.address);
+          .revokeRole(getRoleBytes(BLOCKED_ROLE), user1.address);
 
-        expect(await erc20.hasRole(getRoleBytes("BLOCKED_ROLE"), user1.address))
+        expect(await erc20.hasRole(getRoleBytes(BLOCKED_ROLE), user1.address))
           .to.false;
       });
     });
@@ -364,38 +391,47 @@ describe("Token", () => {
         await erc20.connect(pauser).pause();
 
         await expect(erc20.connect(pauser).unpause()).to.revertedWith(
-          getRoleError(pauser.address, "UNPAUSER_ROLE")
+          getRoleError(pauser.address, UNPAUSER_ROLE)
         );
       });
 
       it("Unpauser can't pause", async () => {
         await expect(erc20.connect(unpauser).pause()).to.revertedWith(
-          getRoleError(unpauser.address, "PAUSER_ROLE")
+          getRoleError(unpauser.address, PAUSER_ROLE)
         );
       });
     });
 
     describe("minter", () => {
       it("can mint", async () => {
-        const mint = () => singleMint(erc20, minter, user1.address, 5);
+        const mint = () => erc20.connect(minter).mint(user1.address, 5);
 
         await expect(mint).to.changeTokenBalance(erc20, user1, 5);
       });
 
+      it("can batch mint", async () => {
+        const mint = () => singleMint(erc20, minter, user1.address, 5);
+
+        await expect(mint).to.changeTokenBalance(erc20, user1, 5);
+      });
+    });
+
+    describe("rescuer", () => {
+      it("can call token rescue", async () => {
+        await erc20
+          .connect(rescuer)
+          .rescueERC20(dummytoken.address, user1.address, 0);
+      });
+    });
+
+    describe("burner", () => {
       it("can burn", async () => {
-        await erc20.connect(userWithTokens).transfer(minter.address, 2);
-        await erc20.connect(minter).burn(2);
+        await erc20.connect(userWithTokens).transfer(burner.address, 2);
+        await erc20.connect(burner).burn(2);
       });
-
       it("can burnFrom", async () => {
-        await erc20.connect(minter).burnFrom(userWithTokens.address, 0);
-      });
-
-      it("can burnFrom along with a permit", async () => {
-        const deadline =
-          (await ethers.provider.getBlock("latest")).timestamp + 5000;
-
-        await burnWithPermit(erc20, userWithTokens, minter, 0, deadline);
+        // Note: this doesn't test whether the burn succeeds (it wouldn't, but the amount is zero here)
+        await erc20.connect(burner).burnFrom(userWithTokens.address, 0);
       });
     });
 
@@ -404,7 +440,7 @@ describe("Token", () => {
         await erc20.connect(userWithTokens).transfer(user1.address, 2);
         await erc20
           .connect(blocklister)
-          .grantRole(getRoleBytes("BLOCKED_ROLE"), user1.address);
+          .grantRole(getRoleBytes(BLOCKED_ROLE), user1.address);
       });
 
       it("can't transfer", async () => {
@@ -429,27 +465,27 @@ describe("Token", () => {
     describe("without role", () => {
       it("can't pause", async () => {
         await expect(erc20.connect(user1).pause()).to.revertedWith(
-          getRoleError(user1.address, "PAUSER_ROLE")
+          getRoleError(user1.address, PAUSER_ROLE)
         );
       });
 
       it("can't unpause", async () => {
         await erc20.connect(pauser).pause();
         await expect(erc20.connect(user1).unpause()).to.revertedWith(
-          getRoleError(user1.address, "UNPAUSER_ROLE")
+          getRoleError(user1.address, UNPAUSER_ROLE)
         );
       });
 
       it("can't burn", async () => {
         await expect(erc20.connect(userWithTokens).burn(1)).to.revertedWith(
-          getRoleError(userWithTokens.address, "MINTER_ROLE")
+          getRoleError(userWithTokens.address, BURNER_ROLE)
         );
       });
 
       it("can't burnFrom", async () => {
         await expect(
           erc20.connect(user1).burnFrom(userWithTokens.address, 0)
-        ).to.revertedWith(getRoleError(user1.address, "MINTER_ROLE"));
+        ).to.revertedWith(getRoleError(user1.address, BURNER_ROLE));
       });
 
       it("can't burnFrom along with a permit", async () => {
@@ -458,39 +494,47 @@ describe("Token", () => {
 
         await expect(
           burnWithPermit(erc20, userWithTokens, user1, 0, deadline)
-        ).to.revertedWith(getRoleError(user1.address, "MINTER_ROLE"));
+        ).to.revertedWith(getRoleError(user1.address, BURNER_ROLE));
       });
 
       it("can't mint", async () => {
         await expect(
+          erc20.connect(user1).mint(user1.address, 10)
+        ).to.revertedWith(getRoleError(user1.address, MINTER_ROLE));
+      });
+
+      it("can't batch mint", async () => {
+        await expect(
           singleMint(erc20, user1, user2.address, 10)
-        ).to.revertedWith(getRoleError(user1.address, "MINTER_ROLE"));
+        ).to.revertedWith(getRoleError(user1.address, MINTER_ROLE));
       });
 
       it("can't upgrade", async () => {
         await expect(
           erc20.connect(user1).checkAuthorizeUpgrade()
-        ).to.revertedWith(getRoleError(user1.address, "PROXYOWNER_ROLE"));
+        ).to.revertedWith(getRoleError(user1.address, PROXYOWNER_ROLE));
       });
 
       it("can't rescue tokens", async () => {
         await expect(
           erc20.connect(user1).rescueERC20(dummytoken.address, user2.address, 1)
-        ).to.revertedWith(getRoleError(user1.address, "PROXYOWNER_ROLE"));
+        ).to.revertedWith(getRoleError(user1.address, RESCUER_ROLE));
       });
 
       it("can't add roles", async () => {
         await expect(
-          erc20.connect(user1).grantRole(getRoleBytes("MINTER"), user2.address)
-        ).to.revertedWith(getRoleError(user1.address, "DEFAULT_ADMIN_ROLE"));
+          erc20
+            .connect(user1)
+            .grantRole(getRoleBytes(MINTER_ROLE), user2.address)
+        ).to.revertedWith(getRoleError(user1.address, DEFAULT_ADMIN_ROLE));
       });
 
       it("can't remove roles", async () => {
         await expect(
           erc20
             .connect(user1)
-            .revokeRole(getRoleBytes("MINTER"), minter.address)
-        ).to.revertedWith(getRoleError(user1.address, "DEFAULT_ADMIN_ROLE"));
+            .revokeRole(getRoleBytes(MINTER_ROLE), minter.address)
+        ).to.revertedWith(getRoleError(user1.address, DEFAULT_ADMIN_ROLE));
       });
     });
   });
@@ -515,7 +559,7 @@ describe("Token", () => {
 
     it("prevents direct burn", async () => {
       await erc20.connect(pauser).pause();
-      await expect(erc20.connect(minter).burn(0)).to.revertedWith(
+      await expect(erc20.connect(burner).burn(0)).to.revertedWith(
         "Pausable: paused"
       );
     });
@@ -523,7 +567,7 @@ describe("Token", () => {
     it("prevents burnFrom", async () => {
       await erc20.connect(pauser).pause();
       await expect(
-        erc20.connect(minter).burnFrom(userWithTokens.address, 0)
+        erc20.connect(burner).burnFrom(userWithTokens.address, 0)
       ).to.revertedWith("Pausable: paused");
     });
 
@@ -533,7 +577,7 @@ describe("Token", () => {
         (await ethers.provider.getBlock("latest")).timestamp + 5000;
 
       await expect(
-        burnWithPermit(erc20, userWithTokens, minter, 0, deadline)
+        burnWithPermit(erc20, userWithTokens, burner, 0, deadline)
       ).to.revertedWith("Pausable: paused");
     });
 
@@ -547,26 +591,26 @@ describe("Token", () => {
 
   describe("Burning", () => {
     it("direct burn works", async () => {
-      await erc20.connect(userWithTokens).transfer(minter.address, 2);
-      const burn = () => erc20.connect(minter).burn(2);
-      await expect(burn).to.changeTokenBalance(erc20, minter, -2);
+      await erc20.connect(userWithTokens).transfer(burner.address, 2);
+      const burn = () => erc20.connect(burner).burn(2);
+      await expect(burn).to.changeTokenBalance(erc20, burner, -2);
       await expect(await erc20.totalSupply()).to.equal(mintAmount - 2);
     });
 
     it("burning with normal allowance works", async () => {
-      await erc20.connect(userWithTokens).approve(minter.address, 5);
+      await erc20.connect(userWithTokens).approve(burner.address, 5);
 
       const burn = () =>
-        erc20.connect(minter).burnFrom(userWithTokens.address, 2);
+        erc20.connect(burner).burnFrom(userWithTokens.address, 2);
 
       await expect(burn).to.changeTokenBalance(erc20, userWithTokens, -2);
       await expect(await erc20.totalSupply()).to.equal(mintAmount - 2);
     });
 
     it("burning emits events", async () => {
-      await erc20.connect(userWithTokens).approve(minter.address, 5);
+      await erc20.connect(userWithTokens).approve(burner.address, 5);
 
-      const burn = erc20.connect(minter).burnFrom(userWithTokens.address, 2);
+      const burn = erc20.connect(burner).burnFrom(userWithTokens.address, 2);
 
       await expect(burn)
         .to.emit(erc20, "Transfer")
@@ -578,10 +622,10 @@ describe("Token", () => {
       const deadline =
         (await ethers.provider.getBlock("latest")).timestamp + 5000;
 
-      await addPermit(erc20, userWithTokens, minter, value, deadline);
+      await addPermit(erc20, userWithTokens, burner, value, deadline);
 
       const burn = () =>
-        erc20.connect(minter).burnFrom(userWithTokens.address, 2);
+        erc20.connect(burner).burnFrom(userWithTokens.address, 2);
 
       await expect(burn).to.changeTokenBalance(erc20, userWithTokens, -2);
     });
@@ -594,7 +638,7 @@ describe("Token", () => {
       const burn = burnWithPermit(
         erc20,
         userWithTokens,
-        minter,
+        burner,
         value,
         deadline
       );
@@ -608,23 +652,23 @@ describe("Token", () => {
         (await ethers.provider.getBlock("latest")).timestamp - 5000;
 
       await expect(
-        addPermit(erc20, userWithTokens, minter, value, deadline)
+        addPermit(erc20, userWithTokens, burner, value, deadline)
       ).to.revertedWith("ERC20Permit: expired deadline");
     });
 
     it("burning without allowance fails", async () => {
-      const burn = erc20.connect(minter).burnFrom(userWithTokens.address, 2);
+      const burn = erc20.connect(burner).burnFrom(userWithTokens.address, 2);
 
       await expect(burn).to.revertedWith("ERC20: insufficient allowance");
     });
 
     it("burning from blocked address fails", async () => {
-      await erc20.connect(userWithTokens).approve(minter.address, 5);
+      await erc20.connect(userWithTokens).approve(burner.address, 5);
       await erc20
         .connect(blocklister)
-        .grantRole(getRoleBytes("BLOCKED_ROLE"), userWithTokens.address);
+        .grantRole(getRoleBytes(BLOCKED_ROLE), userWithTokens.address);
 
-      const burn = erc20.connect(minter).burnFrom(userWithTokens.address, 2);
+      const burn = erc20.connect(burner).burnFrom(userWithTokens.address, 2);
 
       await expect(burn).to.revertedWith("Blocked user");
     });
@@ -632,6 +676,13 @@ describe("Token", () => {
 
   describe("Minting", () => {
     it("single mint", async () => {
+      await expect(() =>
+        erc20.connect(minter).mint(user1.address, 2)
+      ).to.changeTokenBalance(erc20, user1, 2);
+      await expect(await erc20.totalSupply()).to.equal(mintAmount + 2);
+    });
+
+    it("single mint with permit", async () => {
       await expect(() =>
         singleMint(erc20, minter, user1.address, 2)
       ).to.changeTokenBalance(erc20, user1, 2);
@@ -727,14 +778,14 @@ describe("Token", () => {
     it("minting to blocked address fails", async () => {
       await erc20
         .connect(blocklister)
-        .grantRole(getRoleBytes("BLOCKED_ROLE"), user1.address);
+        .grantRole(getRoleBytes(BLOCKED_ROLE), user1.address);
 
       await expect(singleMint(erc20, minter, user1.address, 2)).to.revertedWith(
         "Blocked user"
       );
     });
 
-    describe("checksum", () => {
+    describe("batch minting checksum", () => {
       it("fails for wrong address", async () => {
         await expect(
           erc20
@@ -871,7 +922,7 @@ describe("Token", () => {
       await dummytoken.connect(proxyOwner).transfer(erc20.address, 6);
 
       await erc20
-        .connect(proxyOwner)
+        .connect(rescuer)
         .rescueERC20(dummytoken.address, user1.address, 4);
 
       await expect(await dummytoken.balanceOf(user1.address)).to.equal(4);
@@ -887,7 +938,7 @@ describe("Token", () => {
 
       await expect(
         erc20
-          .connect(proxyOwner)
+          .connect(rescuer)
           .rescueERC20(mockContract.address, user1.address, 4)
       ).to.revertedWith("Mock revert");
     });
@@ -896,7 +947,7 @@ describe("Token", () => {
   describe("Upgradability", () => {
     it("original is initialized", async () => {
       const a = user1.address;
-      await expect(erc20.initialize(a, a, a, a, a, a)).to.revertedWith(
+      await expect(erc20.initialize(a, a, a, a, a, a, a, a)).to.revertedWith(
         "Initializable: contract is already initialized"
       );
     });

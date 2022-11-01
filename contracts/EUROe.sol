@@ -32,6 +32,8 @@ contract EUROe is
     bytes32 public constant UNPAUSER_ROLE = keccak256("UNPAUSER_ROLE");
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant BLOCKED_ROLE = keccak256("BLOCKED_ROLE");
+    bytes32 public constant RESCUER_ROLE = keccak256("RESCUER_ROLE");
+    bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
 
     /**
      * @dev Emitted once a minting set has been completed
@@ -59,7 +61,9 @@ contract EUROe is
         address blocklister,
         address pauser,
         address unpauser,
-        address minter
+        address minter,
+        address rescuer,
+        address burner
     ) external initializer {
         __ERC20_init("EURO Stablecoin", "EUROe");
         __ERC20Burnable_init();
@@ -74,6 +78,8 @@ contract EUROe is
         _grantRole(PAUSER_ROLE, pauser);
         _grantRole(UNPAUSER_ROLE, unpauser);
         _grantRole(MINTER_ROLE, minter);
+        _grantRole(RESCUER_ROLE, rescuer);
+        _grantRole(BURNER_ROLE, burner);
 
         // Add this contract as blocked, so it can't receive its own tokens by accident
         _grantRole(BLOCKED_ROLE, address(this));
@@ -95,7 +101,7 @@ contract EUROe is
     }
 
     /// @inheritdoc ERC20BurnableUpgradeable
-    function burn(uint256 amount) public override onlyRole(MINTER_ROLE) {
+    function burn(uint256 amount) public override onlyRole(BURNER_ROLE) {
         super.burn(amount);
     }
 
@@ -103,7 +109,7 @@ contract EUROe is
     function burnFrom(address account, uint256 amount)
         public
         override
-        onlyRole(MINTER_ROLE)
+        onlyRole(BURNER_ROLE)
     {
         super.burnFrom(account, amount);
     }
@@ -126,9 +132,21 @@ contract EUROe is
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) public onlyRole(MINTER_ROLE) {
+    ) public onlyRole(BURNER_ROLE) {
         super.permit(owner, spender, value, deadline, v, r, s);
         super.burnFrom(owner, value);
+    }
+
+    /**
+     * @dev Mints tokens to the given account
+     * @param account The account to mint tokens to
+     * @param amount How many tokens to mint
+     */
+    function mint(address account, uint256 amount)
+        external
+        onlyRole(MINTER_ROLE)
+    {
+        _mint(account, amount);
     }
 
     /**
@@ -155,13 +173,6 @@ contract EUROe is
             _mint(targets[i], amounts[i]);
         }
         emit MintingSetCompleted(id);
-    }
-
-    function mint(address account, uint256 amount)
-        external
-        onlyRole(MINTER_ROLE)
-    {
-        _mint(account, amount);
     }
 
     /**
@@ -210,7 +221,7 @@ contract EUROe is
         IERC20Upgradeable token,
         address to,
         uint256 amount
-    ) external onlyRole(PROXYOWNER_ROLE) {
+    ) external onlyRole(RESCUER_ROLE) {
         token.safeTransfer(to, amount);
     }
 }

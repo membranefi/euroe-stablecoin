@@ -28,8 +28,8 @@ It is possible to burn tokens.
 
 This can be achieved in either of the following two ways:
 
-1. Add allowance for an address with the _minter_ user role to withdraw your tokens. This allowance can be given either with a direct ERC-20 `approve` transaction to the contract or with a `permit` signature. The address with the _minter_ role burns the tokens.
-1. Transfer tokens to an address with the _minter_ user role. That address then burns the tokens.
+1. Add allowance for an address with the _burner_ user role to withdraw your tokens. This allowance can be given either with a direct ERC-20 `approve` transaction to the contract or with a `permit` signature. The address with the _burner_ role burns the tokens.
+1. Transfer tokens to an address with the _burner_ user role. That address then burns the tokens.
 
 Note that this functionality should be coordinated with the EURO Stablecoin project and only executed after an agreement.
 
@@ -37,7 +37,11 @@ Note that this functionality should be coordinated with the EURO Stablecoin proj
 
 It is possible to mint new tokens.
 
-The minting happens in batches. A batch can include any number of minting actions - each action is a combination of a _target_ (an address) and an _amount_ (an integer). Each action mints an amount of new tokens, which are sent to the corresponding address.
+There are two ways to mint tokens: direct minting or batch minting.
+
+Direct minting simply mints tokens to a given address.
+
+A batch mint can include any number of minting actions - each action is a combination of a _target_ (an address) and an _amount_ (an integer). Each action mints an amount of new tokens, which are sent to the corresponding address.
 
 Each batch has a unique identifier, which is provided by a backend system.
 
@@ -63,7 +67,7 @@ An address with the _admin_ role can assign and unassign any role to any address
 
 ### Proxyowner
 
-An address with the _proxyowner_ role can upgrade the token smart contract via proxy pattern and rescue arbitrary tokens sent to the token contract.
+An address with the _proxyowner_ role can upgrade the token smart contract via proxy pattern.
 
 ### Blocklister
 
@@ -79,7 +83,15 @@ An address with the _unpauser_ role can unpause the contract.
 
 ### Minter
 
-An address with the _minter_ role can mint new tokens, burn their own tokens and burn tokens from an address with an allowance.
+An address with the _minter_ role can mint new tokens either by direct minting or batch minting.
+
+### Rescuer
+
+An address with the _rescuer_ role can rescue arbitrary tokens sent to the token contract.
+
+### Burner
+
+An address with the _burner_ role can burn their own tokens and burn tokens from an address with an allowance.
 
 ### Blocked
 
