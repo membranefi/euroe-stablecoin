@@ -29,6 +29,7 @@ let networks: NetworksUserConfig = {
     gasPrice: 200 * 1_000_000_000,
     chainId: 1,
   }, */
+  hardhat: {},
   goerliDirect: {
     url: Networks.goerli.providerURL,
     accounts: Networks.goerli.privateKeys,

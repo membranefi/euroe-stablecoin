@@ -6,22 +6,24 @@ import euroJSON from "../artifacts/contracts/EUROe.sol/EUROe.json";
 import { EUROe } from "../typechain/euroe";
 import { getMintChecksum } from "./tools";
 import { network } from "hardhat";
+import {
+  amount,
+  deadline,
+  ownerAddress,
+  PROXY_ADDRESS,
+  spenderAddress,
+} from "./fbsign";
 
 // This script is used for manually testing minting
-
-const PROXY_ADDRESS = "0x8f21060D05DF9BcA475Ba23eA26AcCCab9944a2e"; // Address of the token contract (proxy)
-const MINT_TARGET = "0x79afEb066057CF42bDA226F132AF771ADc415E40"; // Who gets the tokens
-const MINT_AMOUNT = 8; // How much to mint
-const EXTERNAL_MINT_ID = 16; // ID that probably comes from database
 
 let api_secret_path: string, api_key: string, vault_account_id: string;
 
 let usedChain: Chain;
 
 if (network.name == "goerliFB") {
-  api_secret_path = process.env.GOERLI_FIREBLOCKS_API_SECRET_PATH_MINTER;
-  api_key = process.env.GOERLI_FIREBLOCKS_API_KEY_MINTER;
-  vault_account_id = process.env.GOERLI_FIREBLOCKS_SOURCE_VAULT_ACCOUNT_ID;
+  api_secret_path = process.env.GOERLI_FIREBLOCKS_API_SECRET_PATH_PROXYOWNER;
+  api_key = process.env.GOERLI_FIREBLOCKS_API_KEY_PROXYOWNER;
+  vault_account_id = "1";
   usedChain = Chain.GOERLI;
 } else if (network.name == "mainnet") {
   // TODO
@@ -61,10 +63,16 @@ async function main() {
     ethers.getDefaultProvider(usedChain)
   ) as EUROe;
 
-  const tx: PopulatedTransaction = await contract.populateTransaction.mint(
-    MINT_TARGET,
-    MINT_AMOUNT
-  );
+  const tx: PopulatedTransaction =
+    await contract.populateTransaction.burnFromWithPermit(
+      ownerAddress,
+      spenderAddress,
+      amount,
+      deadline,
+      0,
+      "0x726ff1306491790d31aee148a73fcc027660e2d06cc788b894acf450799b0af9",
+      "0x4ca2f7fe618fd9a6f0fe28f00efeb48c51fefde1c7bdccb6e39fe13bfa923f67"
+    );
 
   console.log("Sending transaction for signing");
 
