@@ -64,6 +64,7 @@ async function main() {
   };
 
   const typedData = createTypedERC2612Data(message, domain);
+  console.log("JSON", JSON.stringify(typedData));
 
   const { EIP712Domain: _unused, ...types2 } = typedData.types;
   const types: any = types2; // to satisfy TS typing

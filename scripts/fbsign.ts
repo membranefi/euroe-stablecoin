@@ -73,6 +73,7 @@ async function main() {
   };
 
   const typedData = createTypedERC2612Data(message, domain);
+  const json = JSON.stringify(typedData);
 
   const { EIP712Domain: _unused, ...types2 } = typedData.types;
   const types: any = types2;
@@ -90,6 +91,8 @@ async function main() {
   console.log("encoded", encoded);
   console.log("hash", hash);
 
+  const msgToSend = JSON.stringify([ownerAddress, json]);
+
   const { status, id } = await apiClient.createTransaction({
     operation: TransactionOperation.TYPED_MESSAGE,
     assetId: "ETH_TEST3",
@@ -99,7 +102,7 @@ async function main() {
       rawMessageData: {
         messages: [
           {
-            content: Buffer.from(encoded).toString("hex"),
+            content: Buffer.from(msgToSend).toString("hex"),
             //     index: 0,
             type: "ETH_MESSAGE",
           },

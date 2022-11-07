@@ -63,16 +63,15 @@ async function main() {
     ethers.getDefaultProvider(usedChain)
   ) as EUROe;
 
-  const tx: PopulatedTransaction =
-    await contract.populateTransaction.burnFromWithPermit(
-      ownerAddress,
-      spenderAddress,
-      amount,
-      deadline,
-      0,
-      "0x726ff1306491790d31aee148a73fcc027660e2d06cc788b894acf450799b0af9",
-      "0x4ca2f7fe618fd9a6f0fe28f00efeb48c51fefde1c7bdccb6e39fe13bfa923f67"
-    );
+  const tx: PopulatedTransaction = await contract.populateTransaction.permit(
+    ownerAddress,
+    spenderAddress,
+    amount,
+    deadline,
+    0,
+    "0x726ff1306491790d31aee148a73fcc027660e2d06cc788b894acf450799b0af9",
+    "0x4ca2f7fe618fd9a6f0fe28f00efeb48c51fefde1c7bdccb6e39fe13bfa923f67"
+  );
 
   console.log("Sending transaction for signing");
 
