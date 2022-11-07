@@ -58,7 +58,7 @@ async function main() {
   console.log("Token address:", implementation);
   console.log("Proxy address:", proxy.address);
 
-  // FORM DATA TO SIGN
+  // FORM DATA TO SIGN: create an ERC-2612 permit which gives ERC-20 allowance
 
   const domain: Domain = {
     name: "EURO Stablecoin",
