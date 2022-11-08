@@ -111,7 +111,7 @@ async function main() {
       rawMessageData: {
         messages: [
           {
-            content: [msgToSend],
+            content: msgToSend,
             type: "ETH_MESSAGE",
           },
         ],
