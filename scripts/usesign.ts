@@ -16,6 +16,10 @@ import {
 
 // This script is used for manually testing minting
 
+const v = 0;
+const r = "6307dd88cf610eb8f1f89032a01e73f750d041534e1e478eb16dd459b95db580";
+const s = "1a7fbab3fb0583f36892ee507b084f6e9ba43bdcaa65f400cb8fc568e8f98131";
+
 let api_secret_path: string, api_key: string, vault_account_id: string;
 
 let usedChain: Chain;
@@ -68,9 +72,9 @@ async function main() {
     spenderAddress,
     amount,
     deadline,
-    0,
-    "0x726ff1306491790d31aee148a73fcc027660e2d06cc788b894acf450799b0af9",
-    "0x4ca2f7fe618fd9a6f0fe28f00efeb48c51fefde1c7bdccb6e39fe13bfa923f67"
+    v,
+    "0x" + r,
+    "0x" + s
   );
 
   console.log("Sending transaction for signing");

@@ -73,7 +73,14 @@ async function main() {
   };
 
   const typedData = createTypedERC2612Data(message, domain);
-  const json = JSON.stringify(typedData);
+
+  const fbTypedData = {
+    type: "EIP712",
+    index: 0,
+    content: typedData,
+  };
+
+  const json = JSON.stringify(fbTypedData);
 
   const { EIP712Domain: _unused, ...types2 } = typedData.types;
   const types: any = types2;
@@ -88,18 +95,28 @@ async function main() {
     types,
     typedData.message
   );
-  console.log("encoded", encoded);
-  console.log("hash", hash);
+  /*   console.log("encoded", encoded);
+  console.log("hash", hash); */
+  console.log("json", json);
 
-  const msgToSend = JSON.stringify([ownerAddress, json]);
+  const msgToSend = json;
 
   const { status, id } = await apiClient.createTransaction({
     operation: TransactionOperation.TYPED_MESSAGE,
     assetId: "ETH_TEST3",
     source: { type: PeerType.VAULT_ACCOUNT, id: vaultAccountId },
     note: `Test Message`,
+    amount: "0",
     extraParameters: {
       rawMessageData: {
+        messages: [
+          {
+            content: [msgToSend],
+            type: "ETH_MESSAGE",
+          },
+        ],
+      },
+      /* rawMessageData: {
         messages: [
           {
             content: Buffer.from(msgToSend).toString("hex"),
@@ -107,7 +124,7 @@ async function main() {
             type: "ETH_MESSAGE",
           },
         ],
-      },
+      }, */
     },
   });
 
