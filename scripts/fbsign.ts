@@ -30,9 +30,9 @@ export const PROXY_ADDRESS = "0x8f21060D05DF9BcA475Ba23eA26AcCCab9944a2e"; // Ad
 export const ownerAddress = "0x79afEb066057CF42bDA226F132AF771ADc415E40"; // minter
 export const vaultAccountId = "4"; // minter
 export const spenderAddress = "0x7e3F7C5cBe4F7B1f863b2251Cb801b4dEE902a0f"; // proxyowner
-export const deadline = 1967397081;
-export const nonce = 0;
-export const amount = 2;
+export const deadline = 1768074365;
+export const nonce = 5;
+export const amount = 7;
 
 let api_secret_path: string, api_key: string, vault_account_id: string;
 
@@ -67,7 +67,6 @@ async function main() {
     owner: ownerAddress,
     spender: spenderAddress,
     value: amount,
-    //nonce: nonce === undefined ? await call(provider, tokenAddress, `${NONCES_FN}${zeros(24)}${vaultAddress.substr(2)}`) : nonce,
     nonce: nonce,
     deadline: deadline,
   };
@@ -80,51 +79,15 @@ async function main() {
     content: typedData,
   };
 
-  const json = JSON.stringify(fbTypedData);
-
-  const { EIP712Domain: _unused, ...types2 } = typedData.types;
-  const types: any = types2;
-
-  const encoded = ethers.utils._TypedDataEncoder.encode(
-    domain,
-    types,
-    typedData.message
-  );
-  const hash = ethers.utils._TypedDataEncoder.hash(
-    domain,
-    types,
-    typedData.message
-  );
-  /*   console.log("encoded", encoded);
-  console.log("hash", hash); */
-  console.log("json", json);
-
-  const msgToSend = json;
-
   const { status, id } = await apiClient.createTransaction({
     operation: TransactionOperation.TYPED_MESSAGE,
     assetId: "ETH_TEST3",
     source: { type: PeerType.VAULT_ACCOUNT, id: vaultAccountId },
     note: `Test Message`,
-    amount: "0",
     extraParameters: {
       rawMessageData: {
-        messages: [
-          {
-            content: msgToSend,
-            type: "ETH_MESSAGE",
-          },
-        ],
+        messages: [fbTypedData],
       },
-      /* rawMessageData: {
-        messages: [
-          {
-            content: Buffer.from(msgToSend).toString("hex"),
-            //     index: 0,
-            type: "ETH_MESSAGE",
-          },
-        ],
-      }, */
     },
   });
 
@@ -163,9 +126,14 @@ async function main() {
 
   const signature = txInfo.signedMessages[0].signature;
 
-  const v = 27 + signature.v;
-  console.log("Signature: ", "0x" + signature.r + signature.s + v.toString(16));
+  //const v = 27 + signature.v;
+  //console.log("Signature: ", "0x" + signature.r + signature.s + v.toString(16));
+  //console.log("v:", signature.v, "r:", signature.r, "s:", signature.s);
+  //console.log("SIG:", signature);
+  //console.log("signed", txInfo.signedMessages[0]);
   console.log("v:", signature.v, "r:", signature.r, "s:", signature.s);
+
+  //console.log("separated", sep);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

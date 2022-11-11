@@ -8,7 +8,8 @@
   },
   "dependencies": {
     "@openzeppelin/contracts": "4.7.1",
-    "@openzeppelin/contracts-upgradeable": "4.7.1"
+    "@openzeppelin/contracts-upgradeable": "4.7.1",
+    "fireblocks-sdk": "^2.4.0"
   },
   "devDependencies": {
     "@fireblocks/hardhat-fireblocks": "^0.0.9",
@@ -28,7 +29,7 @@
     "eth-typed-data": "^0.1.0-beta.0",
     "ethereum-waffle": "^3.4.4",
     "ethers": "^5.6.8",
-    "fireblocks-defi-sdk": "^1.2.5",
+    "fireblocks-defi-sdk": "^1.2.8",
     "hardhat": "^2.9.9",
     "solidity-coverage": "^0.7.21",
     "ts-node": "^10.8.0",

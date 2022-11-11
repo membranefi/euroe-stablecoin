@@ -14,11 +14,9 @@ import {
   spenderAddress,
 } from "./fbsign";
 
-// This script is used for manually testing minting
-
-const v = 0;
-const r = "6307dd88cf610eb8f1f89032a01e73f750d041534e1e478eb16dd459b95db580";
-const s = "1a7fbab3fb0583f36892ee507b084f6e9ba43bdcaa65f400cb8fc568e8f98131";
+const v = 28;
+const r = "612279737b30faacb976f406b9d98ee985637fcdfb22970687d4ca3d49637b36";
+const s = "69a214d41b093a21e370b44f12583711fc2cf2a75b6ccd809c1af41d6911f84d";
 
 let api_secret_path: string, api_key: string, vault_account_id: string;
 
