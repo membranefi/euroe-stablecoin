@@ -436,29 +436,130 @@ describe("Token", () => {
     });
 
     describe("blocked", () => {
+      let blockedUser;
       beforeEach(async () => {
-        await erc20.connect(userWithTokens).transfer(user1.address, 2);
+        blockedUser = user1;
+        await erc20.connect(userWithTokens).transfer(blockedUser.address, 2);
+        await erc20.connect(userWithTokens).transfer(user2.address, 2);
         await erc20
           .connect(blocklister)
-          .grantRole(getRoleBytes(BLOCKED_ROLE), user1.address);
+          .grantRole(getRoleBytes(BLOCKED_ROLE), blockedUser.address);
       });
 
-      it("can't transfer", async () => {
+      it("can't be the origin of transfer", async () => {
         await expect(
-          erc20.connect(user1).transfer(user2.address, 2)
+          erc20.connect(blockedUser).transfer(user2.address, 2)
         ).to.revertedWith("Blocked user");
       });
 
-      it("can't receive", async () => {
+      it("can't be the target of transfer", async () => {
         await expect(
-          erc20.connect(userWithTokens).transfer(user1.address, 1)
+          erc20.connect(userWithTokens).transfer(blockedUser.address, 1)
         ).to.revertedWith("Blocked user");
       });
 
-      it("can't be minted to", async () => {
+      it("can't be the origin of transferFrom", async () => {
+        await erc20.connect(blockedUser).approve(user2.address, 2);
         await expect(
-          singleMint(erc20, minter, user1.address, 1)
+          erc20
+            .connect(user2)
+            .transferFrom(blockedUser.address, user2.address, 2)
         ).to.revertedWith("Blocked user");
+      });
+
+      it("can't be the target of transferFrom", async () => {
+        await erc20.connect(user2).approve(blockedUser.address, 2);
+        await expect(
+          erc20
+            .connect(blockedUser)
+            .transferFrom(user2.address, blockedUser.address, 2)
+        ).to.revertedWith("Blocked user");
+      });
+
+      it("can't be single minted to", async () => {
+        await expect(
+          erc20.connect(minter).mint(blockedUser.address, 1)
+        ).to.revertedWith("Blocked user");
+      });
+
+      it("can single mint", async () => {
+        await erc20
+          .connect(blocklister)
+          .grantRole(getRoleBytes(BLOCKED_ROLE), minter.address);
+
+        await erc20.connect(minter).mint(user2.address, 1);
+      });
+
+      it("can't be batch minted to", async () => {
+        await expect(
+          singleMint(erc20, minter, blockedUser.address, 1)
+        ).to.revertedWith("Blocked user");
+      });
+
+      it("can batch mint", async () => {
+        await erc20
+          .connect(blocklister)
+          .grantRole(getRoleBytes(BLOCKED_ROLE), minter.address);
+
+        await singleMint(erc20, minter, user2.address, 1);
+      });
+
+      it("can't be burned from", async () => {
+        await erc20.connect(blockedUser).approve(burner.address, 1);
+        await expect(
+          erc20.connect(burner).burnFrom(blockedUser.address, 1)
+        ).to.revertedWith("Blocked user");
+      });
+
+      it("can burn", async () => {
+        await erc20
+          .connect(blocklister)
+          .grantRole(getRoleBytes(BLOCKED_ROLE), burner.address);
+        await erc20.connect(user2).approve(burner.address, 1);
+
+        erc20.connect(burner).burnFrom(user2.address, 1);
+      });
+
+      it("can't be burned from with permit", async () => {
+        const deadline =
+          (await ethers.provider.getBlock("latest")).timestamp + 5000;
+        await erc20.connect(blockedUser).approve(burner.address, 1);
+
+        await expect(
+          burnWithPermit(erc20, blockedUser, burner, 1, deadline)
+        ).to.be.revertedWith("Blocked user");
+      });
+
+      it("can burn with permit", async () => {
+        await erc20
+          .connect(blocklister)
+          .grantRole(getRoleBytes(BLOCKED_ROLE), burner.address);
+        await erc20.connect(user2).approve(burner.address, 1);
+
+        const deadline =
+          (await ethers.provider.getBlock("latest")).timestamp + 5000;
+
+        await burnWithPermit(erc20, user2, burner, 1, deadline);
+      });
+
+      it("can be rescue target", async () => {
+        await dummytoken.connect(proxyOwner).transfer(erc20.address, 6);
+
+        await erc20
+          .connect(rescuer)
+          .rescueERC20(dummytoken.address, blockedUser.address, 4);
+      });
+
+      it("can rescue", async () => {
+        await erc20
+          .connect(blocklister)
+          .grantRole(getRoleBytes(BLOCKED_ROLE), rescuer.address);
+
+        await dummytoken.connect(proxyOwner).transfer(erc20.address, 6);
+
+        await erc20
+          .connect(rescuer)
+          .rescueERC20(dummytoken.address, user2.address, 4);
       });
     });
 
