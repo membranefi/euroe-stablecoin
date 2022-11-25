@@ -15,14 +15,15 @@ async function main() {
 
   if (network.name == "goerliFB") {
     address_proxyOwner = process.env.GOERLI_FIREBLOCKS_PROXYOWNER;
-    address_admin = process.env.GOERLI_FIREBLOCKS_PROXYOWNER;
-    address_blocklister = process.env.GOERLI_FIREBLOCKS_PROXYOWNER;
-    address_pauser = process.env.GOERLI_FIREBLOCKS_PROXYOWNER;
-    address_unpauser = process.env.GOERLI_FIREBLOCKS_PROXYOWNER;
+    address_admin = process.env.GOERLI_FIREBLOCKS_ADMIN;
+    address_blocklister = process.env.GOERLI_FIREBLOCKS_BLOCKLISTER;
+    address_pauser = process.env.GOERLI_FIREBLOCKS_PAUSER;
+    address_unpauser = process.env.GOERLI_FIREBLOCKS_UNPAUSER;
     address_minter = process.env.GOERLI_FIREBLOCKS_MINTER;
     address_rescuer = process.env.GOERLI_FIREBLOCKS_RESCUER;
     address_burner = process.env.GOERLI_FIREBLOCKS_BURNER;
   } else if (network.name == "mainnet") {
+    // TODO
     address_proxyOwner = process.env.MAINNET_FIREBLOCKS_PROXYOWNER;
     address_admin = process.env.MAINNET_FIREBLOCKS_PROXYOWNER;
     address_blocklister = process.env.MAINNET_FIREBLOCKS_PROXYOWNER;

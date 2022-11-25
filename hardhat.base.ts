@@ -14,8 +14,8 @@ import "@openzeppelin/hardhat-upgrades";
 Env.config({ path: "./.secrets.env" });
 
 if (
-  !process.env.GOERLI_FIREBLOCKS_API_KEY_PROXYOWNER ||
-  !process.env.GOERLI_FIREBLOCKS_API_SECRET_PATH_PROXYOWNER ||
+  !process.env.GOERLI_FIREBLOCKS_API_KEY_DEPLOYER ||
+  !process.env.GOERLI_FIREBLOCKS_API_SECRET_PATH_DEPLOYER ||
   !process.env.GOERLI_FIREBLOCKS_SOURCE_VAULT_ACCOUNT_ID
 ) {
   throw "Invalid hardhat config";
@@ -37,8 +37,8 @@ let networks: NetworksUserConfig = {
   goerliFB: {
     url: "https://rpc.ankr.com/eth_goerli",
     fireblocks: {
-      privateKey: process.env.GOERLI_FIREBLOCKS_API_SECRET_PATH_PROXYOWNER,
-      apiKey: process.env.GOERLI_FIREBLOCKS_API_KEY_PROXYOWNER,
+      privateKey: process.env.GOERLI_FIREBLOCKS_API_SECRET_PATH_DEPLOYER,
+      apiKey: process.env.GOERLI_FIREBLOCKS_API_KEY_DEPLOYER,
       vaultAccountIds: process.env.GOERLI_FIREBLOCKS_SOURCE_VAULT_ACCOUNT_ID,
     },
   },
