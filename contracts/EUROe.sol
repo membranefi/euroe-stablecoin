@@ -65,11 +65,11 @@ contract EUROe is
         address rescuer,
         address burner
     ) external initializer {
-        __ERC20_init("EURO Stablecoin", "EUROe");
+        __ERC20_init("EUROe Stablecoin", "EUROe");
         __ERC20Burnable_init();
         __Pausable_init();
         __AccessControl_init();
-        __ERC20Permit_init("EURO Stablecoin");
+        __ERC20Permit_init("EUROe Stablecoin");
         __UUPSUpgradeable_init();
 
         _grantRole(PROXYOWNER_ROLE, proxyOwner);
