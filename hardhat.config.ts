@@ -11,14 +11,7 @@ import "@openzeppelin/hardhat-upgrades";
 
 Env.config({ path: "./.secrets.env" });
 
-if (!process.env.ETHERSCAN_APIKEY) {
-  throw "Invalid hardhat config";
-}
-
 const hardhatConfig: HardhatUserConfig = {
-  etherscan: {
-    apiKey: process.env.ETHERSCAN_APIKEY,
-  },
   solidity: {
     version: "0.8.4",
     settings: {
@@ -49,6 +42,9 @@ const hardhatConfig: HardhatUserConfig = {
   typechain: {
     outDir: "typechain/euroe",
     target: "ethers-v5",
+  },
+  etherscan: {
+    apiKey: process.env.ETHERSCAN_APIKEY,
   },
   mocha: {
     timeout: 0,
