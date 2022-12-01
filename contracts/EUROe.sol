@@ -81,7 +81,7 @@ contract EUROe is
         _grantRole(RESCUER_ROLE, rescuer);
         _grantRole(BURNER_ROLE, burner);
 
-        // Add this contract as blocked, so it can't receive its own tokens by accident
+        // Add this contract as blocked so it can't receive its own tokens by accident
         _grantRole(BLOCKED_ROLE, address(this));
 
         _setRoleAdmin(BLOCKED_ROLE, BLOCKLISTER_ROLE);
@@ -92,10 +92,16 @@ contract EUROe is
         return 6;
     }
 
+    /**
+     * @dev Pauses the contract
+     */
     function pause() external onlyRole(PAUSER_ROLE) {
         _pause();
     }
 
+    /**
+     * @dev Unpauses the contract
+     */
     function unpause() external onlyRole(UNPAUSER_ROLE) {
         _unpause();
     }
@@ -186,6 +192,9 @@ contract EUROe is
 
     /**
      * @dev Checks that the contract is not paused and that neither sender nor receiver are blocked before transferring tokens. See {ERC20Upgradeable-_beforeTokenTransfer}.
+     * @param from source of the transfer
+     * @param to target of the transfer
+     * @param amount amount of tokens to be transferred
      */
     function _beforeTokenTransfer(
         address from,
@@ -197,6 +206,7 @@ contract EUROe is
 
     /**
      * @dev Restricts who can upgrade the contract. Executed when anyone tries to upgrade the contract
+     * @param newImplementation Address of the new implementation
      */
     function _authorizeUpgrade(address newImplementation)
         internal
