@@ -12,8 +12,10 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 
 /**
-@title A stablecoin ERC20 token contract for the EUROe project
+@title A stablecoin ERC20 token contract for EUROe
 @author Membrane Finance
+@notice This contract implements the EUROe stablecoin along with its core functionality, such as minting and burning
+@dev This contract is upgradable. It is implemented as an EIP-1967 transparent upgradable proxy. The PROXYOWNER_ROLE controls upgrades to this contract. The DEFAULT_ADMIN_ROLE grants and revokes roles.
  */
 contract EUROe is
     Initializable,
