@@ -342,6 +342,23 @@ describe("Token", () => {
           await checkRole(BURNER_ROLE);
         });
       });
+
+      it("can add the same role to multiple addresses", async () => {
+        await erc20
+          .connect(admin)
+          .grantRole(getRoleBytes(MINTER_ROLE), user1.address);
+
+        await erc20
+          .connect(admin)
+          .grantRole(getRoleBytes(MINTER_ROLE), user2.address);
+
+        expect(await erc20.hasRole(getRoleBytes(MINTER_ROLE), user1.address)).to
+          .true;
+
+        expect(await erc20.hasRole(getRoleBytes(MINTER_ROLE), user2.address)).to
+          .true;
+      });
+
       it("can't modify blocked role", async () => {
         await expect(
           erc20
