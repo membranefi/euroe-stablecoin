@@ -29,7 +29,7 @@ It is possible to burn tokens.
 This can be achieved in either of the following two ways:
 
 1. Add allowance for an address with the _burner_ user role to withdraw your tokens. This allowance can be given either with a direct ERC-20 `approve` transaction to the contract or with a `permit` signature. The address with the _burner_ role burns the tokens.
-1. Transfer tokens to an address with the _burner_ user role. That address then burns the tokens.
+2. Transfer tokens to an address with the _burner_ user role. That address then burns the tokens.
 
 Note that this functionality should be coordinated with the EURO Stablecoin project and only executed after an agreement.
 
@@ -45,7 +45,7 @@ A batch mint can include any number of minting actions - each action is a combin
 
 Each batch has a unique identifier, which is provided by a backend system.
 
-Each minting batch is checksummed and the checksum value is provided along with the minting set. The checksum is validated in the contract before minting.
+Each minting batch is checksummed, and the checksum value is provided along with the minting set. The checksum is validated in the contract before minting.
 
 ### Pausing and unpausing the contract
 
@@ -53,7 +53,7 @@ Pausing the contract causes all token transfers to fail. It is also possible to 
 
 ### Rescuing tokens
 
-It is possible to rescue an arbitrary token sent to the token contract. This can be used if someone accidentally sends a big amount of tokens to the token contract itself.
+It is possible to rescue an arbitrary token sent to the token contract. This can be used if someone accidentally sends a large amount of tokens to the token contract itself. Please contact Membrane Finance directly if this has happened to you.
 
 ## User roles
 
