@@ -4,5 +4,8 @@
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": true
     },
-    "eslint.validate": ["javascript"]
+    "eslint.validate": [
+        "javascript"
+    ],
+    "solidity.compileUsingRemoteVersion": "v0.8.4+commit.c7e474f2"
 }
