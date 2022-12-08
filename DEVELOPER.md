@@ -18,7 +18,7 @@ The project uses the following main frameworks:
 
 ### Istanbul test coverage report
 
-A test coverage report generated with istanbuls is provided as `Test Coverage Report.pdf`
+A test coverage report generated with istanbul is provided as `Test Coverage Report.pdf`
 
 ### Slither reports
 
