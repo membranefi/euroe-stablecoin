@@ -16,6 +16,10 @@ The project uses the following main frameworks:
 1. Run unit tests: `npx hardhat test`
 1. Run coverage test: `npm run run:coverage`
 
+### Istanbul test coverage report
+
+A test coverage report generated with istanbul is provided as `Test Coverage Report.pdf`
+
 ### Slither reports
 
 For static analysis we use Slither. When it's [installed locally](https://github.com/crytic/slither#how-to-install), you can run: `npm run run:slither` 
@@ -28,4 +32,3 @@ Steps:
 1. Set your environment variables in `.secrets.env`. You can see `.secrets.env.example` for the format. Note that you don't need any of the Fireblocks-related settings when deploying directly with Hardhat
 1. Deploy: `npx hardhat run scripts/deployManual.ts --network goerliDirect` 
 1. Go to Etherscan and open the address given by the deployment script. Mark the contract as proxy in Etherscan.
-
