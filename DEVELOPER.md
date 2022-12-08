@@ -11,10 +11,10 @@ The project uses the following main frameworks:
 ## Preparations
 
 1. Install packages: `yarn`
-2. Compile: `npx hardhat compile`
-3. Generate typechain artifacts: `npm run generate:typechain`
-4. Run unit tests: `npx hardhat test`
-5. Run coverage test: `npm run run:coverage`
+1. Compile: `npx hardhat compile`
+1. Generate typechain artifacts: `npm run generate:typechain`
+1. Run unit tests: `npx hardhat test`
+1. Run coverage test: `npm run run:coverage`
 
 ### Istanbul test coverage report
 
@@ -30,5 +30,5 @@ The contracts can be deployed either directly through Hardhat or through a Fireb
 
 Steps:
 1. Set your environment variables in `.secrets.env`. You can see `.secrets.env.example` for the format. Note that you don't need any of the Fireblocks-related settings when deploying directly with Hardhat
-2. Deploy: `npx hardhat run scripts/deployManual.ts --network goerliDirect` 
-3. Go to Etherscan and open the address given by the deployment script. Mark the contract as proxy in Etherscan.
+1. Deploy: `npx hardhat run scripts/deployManual.ts --network goerliDirect` 
+1. Go to Etherscan and open the address given by the deployment script. Mark the contract as proxy in Etherscan.
