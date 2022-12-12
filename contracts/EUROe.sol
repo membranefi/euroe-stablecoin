@@ -237,6 +237,10 @@ contract EUROe is
         token.safeTransfer(to, amount);
     }
 
+    function renounceRole(bytes32, address) public override {
+        revert("Not supported");
+    }
+
     /**
      * @dev This empty reserved space is put in place to allow future versions to add new
      * variables without shifting down storage in the inheritance chain.
