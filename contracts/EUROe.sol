@@ -238,6 +238,13 @@ contract EUROe is
     }
 
     /**
+     * @dev Prevent anyone from removing their own role (override OZ function)
+     */
+    function renounceRole(bytes32, address) public override {
+        revert("Not supported");
+    }
+
+    /**
      * @dev This empty reserved space is put in place to allow future versions to add new
      * variables without shifting down storage in the inheritance chain.
      * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps

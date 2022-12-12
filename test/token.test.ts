@@ -366,6 +366,14 @@ describe("Token", () => {
             .grantRole(getRoleBytes(BLOCKED_ROLE), user1.address)
         ).to.be.revertedWith(getRoleError(admin.address, BLOCKLISTER_ROLE));
       });
+
+      it("can't renounce their role", async () => {
+        await expect(
+          erc20
+            .connect(admin)
+            .renounceRole(getRoleBytes(DEFAULT_ADMIN_ROLE), admin.address)
+        ).to.be.revertedWith("Not supported");
+      });
     });
 
     describe("blocklister", () => {
@@ -389,6 +397,14 @@ describe("Token", () => {
 
         expect(await erc20.hasRole(getRoleBytes(BLOCKED_ROLE), user1.address))
           .to.false;
+      });
+
+      it("can't renounce their role", async () => {
+        await expect(
+          erc20
+            .connect(blocklister)
+            .renounceRole(getRoleBytes(BLOCKED_ROLE), blocklister.address)
+        ).to.be.revertedWith("Not supported");
       });
     });
 
@@ -417,6 +433,22 @@ describe("Token", () => {
           getRoleError(unpauser.address, PAUSER_ROLE)
         );
       });
+
+      it("pauser can't renounce their role", async () => {
+        await expect(
+          erc20
+            .connect(pauser)
+            .renounceRole(getRoleBytes(PAUSER_ROLE), pauser.address)
+        ).to.be.revertedWith("Not supported");
+      });
+
+      it("unpauser can't renounce their role", async () => {
+        await expect(
+          erc20
+            .connect(unpauser)
+            .renounceRole(getRoleBytes(UNPAUSER_ROLE), unpauser.address)
+        ).to.be.revertedWith("Not supported");
+      });
     });
 
     describe("minter", () => {
@@ -431,6 +463,14 @@ describe("Token", () => {
 
         await expect(mint).to.changeTokenBalance(erc20, user1, 5);
       });
+
+      it("can't renounce their role", async () => {
+        await expect(
+          erc20
+            .connect(minter)
+            .renounceRole(getRoleBytes(MINTER_ROLE), minter.address)
+        ).to.be.revertedWith("Not supported");
+      });
     });
 
     describe("rescuer", () => {
@@ -439,6 +479,14 @@ describe("Token", () => {
           .connect(rescuer)
           .rescueERC20(dummytoken.address, user1.address, 0);
       });
+
+      it("can't renounce their role", async () => {
+        await expect(
+          erc20
+            .connect(rescuer)
+            .renounceRole(getRoleBytes(RESCUER_ROLE), rescuer.address)
+        ).to.be.revertedWith("Not supported");
+      });
     });
 
     describe("burner", () => {
@@ -446,9 +494,18 @@ describe("Token", () => {
         await erc20.connect(userWithTokens).transfer(burner.address, 2);
         await erc20.connect(burner).burn(2);
       });
+
       it("can burnFrom", async () => {
         // Note: this doesn't test whether the burn succeeds (it wouldn't, but the amount is zero here)
         await erc20.connect(burner).burnFrom(userWithTokens.address, 0);
+      });
+
+      it("can't renounce their role", async () => {
+        await expect(
+          erc20
+            .connect(burner)
+            .renounceRole(getRoleBytes(BURNER_ROLE), burner.address)
+        ).to.be.revertedWith("Not supported");
       });
     });
 
@@ -577,6 +634,14 @@ describe("Token", () => {
         await erc20
           .connect(rescuer)
           .rescueERC20(dummytoken.address, user2.address, 4);
+      });
+
+      it("can't renounce their role", async () => {
+        await expect(
+          erc20
+            .connect(blockedUser)
+            .renounceRole(getRoleBytes(BLOCKED_ROLE), blockedUser.address)
+        ).to.be.revertedWith("Not supported");
       });
     });
 
