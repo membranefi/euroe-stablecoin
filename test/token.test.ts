@@ -764,7 +764,14 @@ describe("Token", () => {
       ).to.revertedWith("Pausable: paused");
     });
 
-    it("prevents minting", async () => {
+    it("prevents single minting", async () => {
+      await erc20.connect(pauser).pause();
+      await expect(
+        erc20.connect(minter).mint(user1.address, 2)
+      ).to.revertedWith("Pausable: paused");
+    });
+
+    it("prevents batch minting", async () => {
       await erc20.connect(pauser).pause();
       await expect(singleMint(erc20, minter, user1.address, 1)).to.revertedWith(
         "Pausable: paused"
