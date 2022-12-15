@@ -773,63 +773,114 @@ describe("Token", () => {
   });
 
   describe("Burning", () => {
-    it("direct burn works", async () => {
-      await erc20.connect(userWithTokens).transfer(burner.address, 2);
-      const burn = () => erc20.connect(burner).burn(2);
-      await expect(burn).to.changeTokenBalance(erc20, burner, -2);
-      await expect(await erc20.totalSupply()).to.equal(mintAmount - 2);
+    describe("Regular burning", () => {
+      it("works", async () => {
+        await erc20.connect(userWithTokens).transfer(burner.address, 2);
+        const burn = () => erc20.connect(burner).burn(2);
+        await expect(burn).to.changeTokenBalance(erc20, burner, -2);
+        await expect(await erc20.totalSupply()).to.equal(mintAmount - 2);
+      });
+
+      it("burning with normal allowance works", async () => {
+        await erc20.connect(userWithTokens).approve(burner.address, 5);
+
+        const burn = () =>
+          erc20.connect(burner).burnFrom(userWithTokens.address, 2);
+
+        await expect(burn).to.changeTokenBalance(erc20, userWithTokens, -2);
+        await expect(await erc20.totalSupply()).to.equal(mintAmount - 2);
+      });
+
+      it("burning emits events", async () => {
+        await erc20.connect(userWithTokens).approve(burner.address, 5);
+
+        const burn = erc20.connect(burner).burnFrom(userWithTokens.address, 2);
+
+        await expect(burn)
+          .to.emit(erc20, "Transfer")
+          .withArgs(userWithTokens.address, ethers.constants.AddressZero, 2);
+      });
+
+      it("burnFrom after permit works", async () => {
+        const value = 3;
+        const deadline =
+          (await ethers.provider.getBlock("latest")).timestamp + 5000;
+
+        await addPermit(erc20, userWithTokens, burner, value, deadline);
+
+        const burn = () =>
+          erc20.connect(burner).burnFrom(userWithTokens.address, 2);
+
+        await expect(burn).to.changeTokenBalance(erc20, userWithTokens, -2);
+      });
+
+      it("burning without allowance fails", async () => {
+        const burn = erc20.connect(burner).burnFrom(userWithTokens.address, 2);
+
+        await expect(burn).to.revertedWith("ERC20: insufficient allowance");
+      });
+
+      it("burning from blocked address fails", async () => {
+        await erc20.connect(userWithTokens).approve(burner.address, 5);
+        await erc20
+          .connect(blocklister)
+          .grantRole(getRoleBytes(BLOCKED_ROLE), userWithTokens.address);
+
+        const burn = erc20.connect(burner).burnFrom(userWithTokens.address, 2);
+
+        await expect(burn).to.revertedWith("Blocked user");
+      });
     });
 
-    it("burning with normal allowance works", async () => {
-      await erc20.connect(userWithTokens).approve(burner.address, 5);
+    describe("Burning along a permit", () => {
+      it("works", async () => {
+        const value = 2;
+        const deadline =
+          (await ethers.provider.getBlock("latest")).timestamp + 5000;
 
-      const burn = () =>
-        erc20.connect(burner).burnFrom(userWithTokens.address, 2);
+        const burn = burnWithPermit(
+          erc20,
+          userWithTokens,
+          burner,
+          value,
+          deadline
+        );
 
-      await expect(burn).to.changeTokenBalance(erc20, userWithTokens, -2);
-      await expect(await erc20.totalSupply()).to.equal(mintAmount - 2);
+        await expect(() => burn).to.changeTokenBalance(
+          erc20,
+          userWithTokens,
+          -2
+        );
+      });
+
+      it("fails if spender isn't a burner", async () => {
+        const value = 2;
+        const deadline =
+          (await ethers.provider.getBlock("latest")).timestamp + 5000;
+
+        await expect(
+          burnWithPermit(erc20, userWithTokens, user1, value, deadline)
+        ).to.revertedWith(getRoleError(user1.address, BURNER_ROLE));
+      });
     });
+  });
 
-    it("burning emits events", async () => {
-      await erc20.connect(userWithTokens).approve(burner.address, 5);
-
-      const burn = erc20.connect(burner).burnFrom(userWithTokens.address, 2);
-
-      await expect(burn)
-        .to.emit(erc20, "Transfer")
-        .withArgs(userWithTokens.address, ethers.constants.AddressZero, 2);
-    });
-
-    it("burnFrom after permit works", async () => {
+  describe("Permit", () => {
+    it("works", async () => {
       const value = 3;
       const deadline =
         (await ethers.provider.getBlock("latest")).timestamp + 5000;
 
       await addPermit(erc20, userWithTokens, burner, value, deadline);
 
-      const burn = () =>
-        erc20.connect(burner).burnFrom(userWithTokens.address, 2);
-
-      await expect(burn).to.changeTokenBalance(erc20, userWithTokens, -2);
-    });
-
-    it("burnFrom along a permit works", async () => {
-      const value = 2;
-      const deadline =
-        (await ethers.provider.getBlock("latest")).timestamp + 5000;
-
-      const burn = burnWithPermit(
-        erc20,
-        userWithTokens,
-        burner,
-        value,
-        deadline
+      const allowance = await erc20.allowance(
+        userWithTokens.address,
+        burner.address
       );
-
-      await expect(() => burn).to.changeTokenBalance(erc20, userWithTokens, -2);
+      expect(allowance).to.be.equal(value);
     });
 
-    it("burning with expired permit fails", async () => {
+    it("creating expired permit fails", async () => {
       const value = 3;
       const deadline =
         (await ethers.provider.getBlock("latest")).timestamp - 5000;
@@ -837,23 +888,6 @@ describe("Token", () => {
       await expect(
         addPermit(erc20, userWithTokens, burner, value, deadline)
       ).to.revertedWith("ERC20Permit: expired deadline");
-    });
-
-    it("burning without allowance fails", async () => {
-      const burn = erc20.connect(burner).burnFrom(userWithTokens.address, 2);
-
-      await expect(burn).to.revertedWith("ERC20: insufficient allowance");
-    });
-
-    it("burning from blocked address fails", async () => {
-      await erc20.connect(userWithTokens).approve(burner.address, 5);
-      await erc20
-        .connect(blocklister)
-        .grantRole(getRoleBytes(BLOCKED_ROLE), userWithTokens.address);
-
-      const burn = erc20.connect(burner).burnFrom(userWithTokens.address, 2);
-
-      await expect(burn).to.revertedWith("Blocked user");
     });
   });
 
