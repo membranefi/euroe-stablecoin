@@ -872,10 +872,8 @@ describe("Token", () => {
           .withArgs(ethers.constants.AddressZero, user1.address, 2);
       });
 
-      it("can't mint zero", async () => {
-        await expect(
-          erc20.connect(minter).mint(user1.address, 0)
-        ).to.revertedWith("Mint amount not greater than 0");
+      it("can mint zero", async () => {
+        erc20.connect(minter).mint(user1.address, 0);
       });
 
       it("minting to blocked address fails", async () => {

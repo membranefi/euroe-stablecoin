@@ -154,7 +154,6 @@ contract EUROe is
         external
         onlyRole(MINTER_ROLE)
     {
-        require(amount > 0, "Mint amount not greater than 0");
         _mint(account, amount);
     }
 
