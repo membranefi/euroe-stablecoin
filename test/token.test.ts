@@ -403,7 +403,7 @@ describe("Token", () => {
         await expect(
           erc20
             .connect(blocklister)
-            .renounceRole(getRoleBytes(BLOCKED_ROLE), blocklister.address)
+            .renounceRole(getRoleBytes(BLOCKLISTER_ROLE), blocklister.address)
         ).to.be.revertedWith("Not supported");
       });
     });
