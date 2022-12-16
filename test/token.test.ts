@@ -924,6 +924,48 @@ describe("Token", () => {
       expect(allowance).to.be.equal(value);
     });
 
+    it("using the same permit twice fails", async () => {
+      const value = 3;
+      const deadline =
+        (await ethers.provider.getBlock("latest")).timestamp + 5000;
+
+      const permit = await signERC2612Permit(
+        userWithTokens,
+        erc20.address,
+        userWithTokens.address,
+        burner.address,
+        value,
+        deadline
+      );
+
+      await erc20
+        .connect(userWithTokens)
+        .permit(
+          userWithTokens.address,
+          burner.address,
+          value,
+          deadline,
+          permit.v,
+          permit.r,
+          permit.s
+        );
+
+      // reuse
+      await expect(
+        erc20
+          .connect(userWithTokens)
+          .permit(
+            userWithTokens.address,
+            burner.address,
+            value,
+            deadline,
+            permit.v,
+            permit.r,
+            permit.s
+          )
+      ).to.be.revertedWith("ERC20Permit: invalid signature");
+    });
+
     it("creating expired permit fails", async () => {
       const value = 3;
       const deadline =
