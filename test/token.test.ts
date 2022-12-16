@@ -827,6 +827,14 @@ describe("Token", () => {
         await expect(burn).to.revertedWith("ERC20: insufficient allowance");
       });
 
+      it("burning without enough balance fails", async () => {
+        //await erc20.connect(userWithTokens).transfer(burner.address, 2);
+        const burn = erc20.connect(burner).burn(2);
+        await expect(burn).to.revertedWith(
+          "ERC20: burn amount exceeds balance"
+        );
+      });
+
       it("burning from blocked address fails", async () => {
         await erc20.connect(userWithTokens).approve(burner.address, 5);
         await erc20
@@ -858,6 +866,16 @@ describe("Token", () => {
           userWithTokens,
           -2
         );
+      });
+
+      it("fails if not enough balance", async () => {
+        const value = 2;
+        const deadline =
+          (await ethers.provider.getBlock("latest")).timestamp + 5000;
+
+        await expect(
+          burnWithPermit(erc20, user1, burner, value, deadline)
+        ).to.be.revertedWith("ERC20: burn amount exceeds balance");
       });
 
       it("fails if spender isn't the sender", async () => {
