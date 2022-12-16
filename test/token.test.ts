@@ -403,7 +403,7 @@ describe("Token", () => {
         await expect(
           erc20
             .connect(blocklister)
-            .renounceRole(getRoleBytes(BLOCKED_ROLE), blocklister.address)
+            .renounceRole(getRoleBytes(BLOCKLISTER_ROLE), blocklister.address)
         ).to.be.revertedWith("Not supported");
       });
     });
@@ -764,7 +764,14 @@ describe("Token", () => {
       ).to.revertedWith("Pausable: paused");
     });
 
-    it("prevents minting", async () => {
+    it("prevents single minting", async () => {
+      await erc20.connect(pauser).pause();
+      await expect(
+        erc20.connect(minter).mint(user1.address, 2)
+      ).to.revertedWith("Pausable: paused");
+    });
+
+    it("prevents batch minting", async () => {
       await erc20.connect(pauser).pause();
       await expect(singleMint(erc20, minter, user1.address, 1)).to.revertedWith(
         "Pausable: paused"
@@ -892,114 +899,138 @@ describe("Token", () => {
   });
 
   describe("Minting", () => {
-    it("single mint", async () => {
-      await expect(() =>
-        erc20.connect(minter).mint(user1.address, 2)
-      ).to.changeTokenBalance(erc20, user1, 2);
-      await expect(await erc20.totalSupply()).to.equal(mintAmount + 2);
+    describe("Single minting", () => {
+      it("works", async () => {
+        await expect(() =>
+          erc20.connect(minter).mint(user1.address, 2)
+        ).to.changeTokenBalance(erc20, user1, 2);
+        await expect(await erc20.totalSupply()).to.equal(mintAmount + 2);
+      });
+
+      it("emits transfer events", async () => {
+        await expect(erc20.connect(minter).mint(user1.address, 2))
+          .to.emit(erc20, "Transfer")
+          .withArgs(ethers.constants.AddressZero, user1.address, 2);
+      });
+
+      it("can mint zero", async () => {
+        erc20.connect(minter).mint(user1.address, 0);
+      });
+
+      it("minting to blocked address fails", async () => {
+        await erc20
+          .connect(blocklister)
+          .grantRole(getRoleBytes(BLOCKED_ROLE), user1.address);
+
+        await expect(
+          erc20.connect(minter).mint(user1.address, 2)
+        ).to.revertedWith("Blocked user");
+      });
     });
 
-    it("single mint with permit", async () => {
-      await expect(() =>
-        singleMint(erc20, minter, user1.address, 2)
-      ).to.changeTokenBalance(erc20, user1, 2);
-      await expect(await erc20.totalSupply()).to.equal(mintAmount + 2);
-    });
+    describe("Multiple minting", () => {
+      it("works for single", async () => {
+        await expect(() =>
+          singleMint(erc20, minter, user1.address, 2)
+        ).to.changeTokenBalance(erc20, user1, 2);
+        await expect(await erc20.totalSupply()).to.equal(mintAmount + 2);
+      });
 
-    it("multiple mint", async () => {
-      const targets = [user1.address, user2.address, admin.address];
-      const amounts = [1, 2, 3];
-      await expect(() =>
-        erc20
-          .connect(minter)
-          .mintSet(targets, amounts, 1, getMintChecksum(targets, amounts, 1))
-      ).to.changeTokenBalances(erc20, [user1, user2, admin], [1, 2, 3]);
-      await expect(await erc20.totalSupply()).to.equal(mintAmount + 6);
-    });
+      it("works for multiple", async () => {
+        const targets = [user1.address, user2.address, admin.address];
+        const amounts = [1, 2, 3];
+        await expect(() =>
+          erc20
+            .connect(minter)
+            .mintSet(targets, amounts, 1, getMintChecksum(targets, amounts, 1))
+        ).to.changeTokenBalances(erc20, [user1, user2, admin], [1, 2, 3]);
+        await expect(await erc20.totalSupply()).to.equal(mintAmount + 6);
+      });
 
-    it("can mint multiple times to the same target", async () => {
-      const targets = [user1.address, user1.address, admin.address];
-      const amounts = [1, 2, 4];
-      await expect(() =>
-        erc20
-          .connect(minter)
-          .mintSet(targets, amounts, 1, getMintChecksum(targets, amounts, 1))
-      ).to.changeTokenBalances(erc20, [user1, admin], [3, 4]);
-      await expect(await erc20.totalSupply()).to.equal(mintAmount + 7);
-    });
+      it("can mint multiple times to the same target", async () => {
+        const targets = [user1.address, user1.address, admin.address];
+        const amounts = [1, 2, 4];
+        await expect(() =>
+          erc20
+            .connect(minter)
+            .mintSet(targets, amounts, 1, getMintChecksum(targets, amounts, 1))
+        ).to.changeTokenBalances(erc20, [user1, admin], [3, 4]);
+        await expect(await erc20.totalSupply()).to.equal(mintAmount + 7);
+      });
 
-    it("emits main event", async () => {
-      await expect(
-        erc20
-          .connect(minter)
-          .mintSet(
-            [user1.address],
-            [7],
-            6,
-            getMintChecksum([user1.address], [7], 6)
-          )
-      )
-        .to.emit(erc20, "MintingSetCompleted")
-        .withArgs(6);
-    });
+      it("emits main event", async () => {
+        await expect(
+          erc20
+            .connect(minter)
+            .mintSet(
+              [user1.address],
+              [7],
+              6,
+              getMintChecksum([user1.address], [7], 6)
+            )
+        )
+          .to.emit(erc20, "MintingSetCompleted")
+          .withArgs(6);
+      });
 
-    it("emits transfer events", async () => {
-      const user1Amount = 7;
-      const user2Amount = 8;
-      const id = 6;
-      await expect(
-        erc20
-          .connect(minter)
-          .mintSet(
-            [user1.address, user2.address],
-            [user1Amount, user2Amount],
-            id,
-            getMintChecksum(
+      it("emits transfer events", async () => {
+        const user1Amount = 7;
+        const user2Amount = 8;
+        const id = 6;
+        await expect(
+          erc20
+            .connect(minter)
+            .mintSet(
               [user1.address, user2.address],
               [user1Amount, user2Amount],
-              id
+              id,
+              getMintChecksum(
+                [user1.address, user2.address],
+                [user1Amount, user2Amount],
+                id
+              )
             )
-          )
-      )
-        .to.emit(erc20, "Transfer")
-        .withArgs(ethers.constants.AddressZero, user1.address, user1Amount)
-        .to.emit(erc20, "Transfer")
-        .withArgs(ethers.constants.AddressZero, user2.address, user2Amount);
-    });
+        )
+          .to.emit(erc20, "Transfer")
+          .withArgs(ethers.constants.AddressZero, user1.address, user1Amount)
+          .to.emit(erc20, "Transfer")
+          .withArgs(ethers.constants.AddressZero, user2.address, user2Amount);
+      });
 
-    it("can't mint zero", async () => {
-      await expect(
-        erc20
-          .connect(minter)
-          .mintSet(
-            [minter.address],
-            [0],
-            1,
-            getMintChecksum([minter.address], [0], 1)
-          )
-      ).to.revertedWith("Mint amount not greater than 0");
-    });
+      it("can't mint zero", async () => {
+        await expect(
+          erc20
+            .connect(minter)
+            .mintSet(
+              [minter.address],
+              [0],
+              1,
+              getMintChecksum([minter.address], [0], 1)
+            )
+        ).to.revertedWith("Mint amount not greater than 0");
+      });
 
-    it("minting empty list fails", async () => {
-      await expect(
-        erc20.connect(minter).mintSet([], [], 1, getMintChecksum([], [], 1))
-      ).to.revertedWith("Nothing to mint");
-    });
+      it("minting empty list fails", async () => {
+        await expect(
+          erc20.connect(minter).mintSet([], [], 1, getMintChecksum([], [], 1))
+        ).to.revertedWith("Nothing to mint");
+      });
 
-    it("minting mismatch fails", async () => {
-      await expect(
-        erc20.connect(minter).mintSet([], [1], 1, getMintChecksum([], [1], 1))
-      ).to.revertedWith("Unmatching mint lengths");
-    });
+      it("minting mismatch fails", async () => {
+        await expect(
+          erc20.connect(minter).mintSet([], [1], 1, getMintChecksum([], [1], 1))
+        ).to.revertedWith("Unmatching mint lengths");
+      });
 
-    it("minting to blocked address fails", async () => {
-      await erc20
-        .connect(blocklister)
-        .grantRole(getRoleBytes(BLOCKED_ROLE), user1.address);
+      it("minting to blocked address fails", async () => {
+        await erc20
+          .connect(blocklister)
+          .grantRole(getRoleBytes(BLOCKED_ROLE), user1.address);
 
-      await expect(singleMint(erc20, minter, user1.address, 2)).to.revertedWith(
-        "Blocked user"
-      );
+        await expect(
+          singleMint(erc20, minter, user1.address, 2)
+        ).to.revertedWith("Blocked user");
+      });
     });
 
     describe("batch minting checksum", () => {
