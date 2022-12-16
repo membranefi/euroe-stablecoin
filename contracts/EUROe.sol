@@ -141,7 +141,7 @@ contract EUROe is
         bytes32 r,
         bytes32 s
     ) public onlyRole(BURNER_ROLE) {
-        require(hasRole(BURNER_ROLE, spender));
+        require(msg.sender == spender, "Invalid spender");
         super.permit(owner, spender, value, deadline, v, r, s);
         super.burnFrom(owner, value);
     }

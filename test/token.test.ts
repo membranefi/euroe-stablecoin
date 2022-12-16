@@ -860,14 +860,33 @@ describe("Token", () => {
         );
       });
 
-      it("fails if spender isn't a burner", async () => {
+      it("fails if spender isn't the sender", async () => {
         const value = 2;
         const deadline =
           (await ethers.provider.getBlock("latest")).timestamp + 5000;
 
+        const result = await signERC2612Permit(
+          userWithTokens,
+          erc20.address,
+          userWithTokens.address,
+          user1.address,
+          value,
+          deadline
+        );
+
         await expect(
-          burnWithPermit(erc20, userWithTokens, user1, value, deadline)
-        ).to.revertedWith(getRoleError(user1.address, BURNER_ROLE));
+          erc20
+            .connect(burner)
+            .burnFromWithPermit(
+              userWithTokens.address,
+              user1.address,
+              value,
+              deadline,
+              result.v,
+              result.r,
+              result.s
+            )
+        ).to.revertedWith("Invalid spender");
       });
     });
   });
