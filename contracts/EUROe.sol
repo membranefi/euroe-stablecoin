@@ -248,6 +248,7 @@ contract EUROe is
     }
 
     /**
+     * @notice Used for rescuing tokens sent to the contract. Contact EUROe if you have accidentally sent tokens to the contract.
      * @dev Allows the rescue of an arbitrary token sent accidentally to the contract
      * @param token Which token we want to rescue
      * @param to Where should the rescued tokens be sent to
