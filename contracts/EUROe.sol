@@ -246,6 +246,25 @@ contract EUROe is
     }
 
     /**
+     * @dev Disable blocking the zero address to prevent mistakes related to blocking
+     */
+    function grantRole(bytes32 role, address account)
+        public
+        virtual
+        override
+        onlyRole(getRoleAdmin(role))
+    {
+        if (
+            (role == bytes32(BLOCKED_ROLE)) && (address(account) == address(0))
+        ) {
+            // Only apply to the blocked role if it is trying to block the null address
+            revert("Cannot blocklist the zero address");
+        } else {
+            _grantRole(role, account);
+        }
+    }
+
+    /**
      * @dev This empty reserved space is put in place to allow future versions to add new
      * variables without shifting down storage in the inheritance chain.
      * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
