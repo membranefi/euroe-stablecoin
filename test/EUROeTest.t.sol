@@ -716,38 +716,7 @@ contract EuroeTest is Test {
         );
     }
 
-    function test_permit_spender_notEqual_burner(
-        uint256 privateKey,
-        address spender,
-        uint256 value,
-        uint256 deadline
-    )
-        public
-        validPrivateKey(privateKey)
-        mintToken(vm.addr(privateKey), value)
-        totalSupplyDecreases(value)
-    {
-        vm.assume(deadline > block.timestamp);
-        vm.assume(spender != BURNER);
-        vm.assume(spender != address(0));
-
-        address owner = vm.addr(privateKey);
-
-        uint256 nonce = proxied.nonces(owner);
-
-        approvePrank(owner, BURNER, value);
-
-        burnFromWithPermitPrank(
-            BURNER,
-            privateKey,
-            spender,
-            value,
-            deadline,
-            nonce
-        );
-    }
-
-    function test_permit_spender_notEqual_burner_insufficientallowance(
+    function test_permit_spender_notEqual_burner_invalidSpender(
         uint256 privateKey,
         address spender,
         uint256 value,
@@ -767,7 +736,7 @@ contract EuroeTest is Test {
 
         uint256 nonce = proxied.nonces(owner);
 
-        vm.expectRevert("ERC20: insufficient allowance");
+        vm.expectRevert("Invalid spender");
         burnFromWithPermitPrank(
             BURNER,
             privateKey,
