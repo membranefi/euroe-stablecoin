@@ -241,7 +241,7 @@ contract EUROe is
     /**
      * @dev Prevent anyone from removing their own role (override OZ function)
      */
-    function renounceRole(bytes32, address) public override {
+    function renounceRole(bytes32, address) public pure override {
         revert("Not supported");
     }
 
