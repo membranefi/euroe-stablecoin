@@ -35,7 +35,17 @@ const hardhatConfig: HardhatUserConfig = {
       fireblocks: {
         privateKey: process.env.GOERLI_FIREBLOCKS_API_SECRET_PATH_DEPLOYER,
         apiKey: process.env.GOERLI_FIREBLOCKS_API_KEY_DEPLOYER,
-        vaultAccountIds: process.env.GOERLI_FIREBLOCKS_SOURCE_VAULT_ACCOUNT_ID,
+        vaultAccountIds:
+          process.env.GOERLI_FIREBLOCKS_VAULT_ACCOUNT_ID_DEPLOYER,
+      },
+    },
+    mainnetFB: {
+      url: "https://rpc.ankr.com/eth",
+      fireblocks: {
+        privateKey: process.env.MAINNET_FIREBLOCKS_API_SECRET_PATH_DEPLOYER,
+        apiKey: process.env.MAINNET_FIREBLOCKS_API_KEY_DEPLOYER,
+        vaultAccountIds:
+          process.env.MAINNET_FIREBLOCKS_VAULT_ACCOUNT_ID_DEPLOYER,
       },
     },
   },

@@ -26,7 +26,7 @@ For static analysis we use Slither. When it's [installed locally](https://github
 
 ## Deployment
 
-The contracts can be deployed either directly through Hardhat or through a Fireblocks integration (with the help of Hardhat). This section explains direct Hardhat deployment - Fireblocks deployment is documented elsewhere. Hardhat deployment also verifies the contracts in Etherscan.
+The contracts can be deployed either directly through Hardhat or through a Fireblocks integration (with the help of Hardhat). This section explains direct Hardhat deployment - Fireblocks deployment is documented elsewhere. Deployments also verify the contracts in Etherscan.
 
 Steps:
 1. Set your environment variables in `.secrets.env`. You can see `.secrets.env.example` for the format. Note that you don't need any of the Fireblocks-related settings when deploying directly with Hardhat
