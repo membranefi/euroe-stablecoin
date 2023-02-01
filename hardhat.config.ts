@@ -39,6 +39,24 @@ const hardhatConfig: HardhatUserConfig = {
           process.env.GOERLI_FIREBLOCKS_VAULT_ACCOUNT_ID_DEPLOYER,
       },
     },
+    mumbaiFB: {
+      url: "https://rpc.ankr.com/polygon_mumbai",
+      fireblocks: {
+        privateKey: process.env.MUMBAI_FIREBLOCKS_API_SECRET_PATH_DEPLOYER,
+        apiKey: process.env.MUMBAI_FIREBLOCKS_API_KEY_DEPLOYER,
+        vaultAccountIds:
+          process.env.MUMBAI_FIREBLOCKS_VAULT_ACCOUNT_ID_DEPLOYER,
+      },
+    },
+    polyMainnetFB: {
+      url: "https://rpc.ankr.com/polygon",
+      fireblocks: {
+        privateKey: process.env.POLY_FIREBLOCKS_API_SECRET_PATH_DEPLOYER,
+        apiKey: process.env.POLY_FIREBLOCKS_API_KEY_DEPLOYER,
+        vaultAccountIds:
+          process.env.POLY_FIREBLOCKS_VAULT_ACCOUNT_ID_DEPLOYER,
+      },
+    },
     mainnetFB: {
       url: "https://rpc.ankr.com/eth",
       fireblocks: {
@@ -54,7 +72,12 @@ const hardhatConfig: HardhatUserConfig = {
     target: "ethers-v5",
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_APIKEY,
+    apiKey: {
+      mainnet: process.env.ETHERSCAN_APIKEY,
+      goerli: process.env.ETHERSCAN_APIKEY,
+      polygonMumbai: process.env.POLYGONSCAN_APIKEY,
+      polygon: process.env.POLYGONSCAN_APIKEY,
+    },
   },
   mocha: {
     timeout: 0,
