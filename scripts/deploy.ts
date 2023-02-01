@@ -31,14 +31,32 @@ async function main() {
     address_minter = process.env.MAINNET_FIREBLOCKS_MINTER;
     address_rescuer = process.env.MAINNET_FIREBLOCKS_RESCUER;
     address_burner = process.env.MAINNET_FIREBLOCKS_BURNER;
+  } else if (network.name == "mumbaiFB") {
+    address_proxyOwner = process.env.MUMBAI_FIREBLOCKS_PROXYOWNER;
+    address_admin = process.env.MUMBAI_FIREBLOCKS_ADMIN;
+    address_blocklister = process.env.MUMBAI_FIREBLOCKS_BLOCKLISTER;
+    address_pauser = process.env.MUMBAI_FIREBLOCKS_PAUSER;
+    address_unpauser = process.env.MUMBAI_FIREBLOCKS_UNPAUSER;
+    address_minter = process.env.MUMBAI_FIREBLOCKS_MINTER;
+    address_rescuer = process.env.MUMBAI_FIREBLOCKS_RESCUER;
+    address_burner = process.env.MUMBAI_FIREBLOCKS_BURNER;
+  }else if (network.name =="polyMainnetFB") {
+    address_proxyOwner = process.env.POLY_FIREBLOCKS_PROXYOWNER;
+    address_admin = process.env.POLY_FIREBLOCKS_ADMIN;
+    address_blocklister = process.env.POLY_FIREBLOCKS_BLOCKLISTER;
+    address_pauser = process.env.POLY_FIREBLOCKS_PAUSER;
+    address_unpauser = process.env.POLY_FIREBLOCKS_UNPAUSER;
+    address_minter = process.env.POLY_FIREBLOCKS_MINTER;
+    address_rescuer = process.env.POLY_FIREBLOCKS_RESCUER;
+    address_burner = process.env.POLY_FIREBLOCKS_BURNER;
   }
+
 
   if (network.name == "hardhat" || network.name == "localhost") {
     throw "Local deployment not possible";
   }
 
   if (
-    !process.env.ETHERSCAN_APIKEY ||
     !address_proxyOwner ||
     !address_admin ||
     !address_blocklister ||
