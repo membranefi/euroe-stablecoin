@@ -66,6 +66,15 @@ const hardhatConfig: HardhatUserConfig = {
           process.env.MAINNET_FIREBLOCKS_VAULT_ACCOUNT_ID_DEPLOYER,
       },
     },
+    avalancheTestNetFB: {
+      url: `https://avalanche-fuji.infura.io/v3/${process.env.INFURA_API_KEY}`,
+      fireblocks: {
+        privateKey: process.env.FUJI_FIREBLOCKS_API_SECRET_PATH_DEPLOYER,
+        apiKey: process.env.FUJI_FIREBLOCKS_API_KEY_DEPLOYER,
+        vaultAccountIds:
+          process.env.FUJI_FIREBLOCKS_VAULT_ACCOUNT_ID_DEPLOYER,
+      },
+    },
   },
   typechain: {
     outDir: "typechain/euroe",
@@ -77,6 +86,7 @@ const hardhatConfig: HardhatUserConfig = {
       goerli: process.env.ETHERSCAN_APIKEY,
       polygonMumbai: process.env.POLYGONSCAN_APIKEY,
       polygon: process.env.POLYGONSCAN_APIKEY,
+      avalancheFujiTestnet: process.env.SNOWTRACE_API_KEY
     },
   },
   mocha: {
