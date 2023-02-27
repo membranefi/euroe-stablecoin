@@ -67,7 +67,7 @@ const hardhatConfig: HardhatUserConfig = {
       },
     },
     avalancheTestNetFB: {
-      url: "https://avalanche-fuji.infura.io/v3/3605cdd4171a48c29584fdc9ab4cc7c6",
+      url: `https://avalanche-fuji.infura.io/v3/${process.env.INFURA_API_KEY}`,
       fireblocks: {
         privateKey: process.env.FUJI_FIREBLOCKS_API_SECRET_PATH_DEPLOYER,
         apiKey: process.env.FUJI_FIREBLOCKS_API_KEY_DEPLOYER,
