@@ -58,6 +58,15 @@ async function main() {
     address_minter = process.env.FUJI_FIREBLOCKS_MINTER;
     address_rescuer = process.env.FUJI_FIREBLOCKS_RESCUER;
     address_burner = process.env.FUJI_FIREBLOCKS_BURNER;
+  }else if (network.name =="avalancheFB"){
+    address_proxyOwner = process.env.AVAX_FIREBLOCKS_PROXYOWNER;
+    address_admin = process.env.AVAX_FIREBLOCKS_ADMIN;
+    address_blocklister = process.env.AVAX_FIREBLOCKS_BLOCKLISTER;
+    address_pauser = process.env.AVAX_FIREBLOCKS_PAUSER;
+    address_unpauser = process.env.AVAX_FIREBLOCKS_UNPAUSER;
+    address_minter = process.env.AVAX_FIREBLOCKS_MINTER;
+    address_rescuer = process.env.AVAX_FIREBLOCKS_RESCUER;
+    address_burner = process.env.AVAX_FIREBLOCKS_BURNER;
   }
 
 
