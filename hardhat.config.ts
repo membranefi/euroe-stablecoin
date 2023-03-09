@@ -101,8 +101,19 @@ const hardhatConfig: HardhatUserConfig = {
       polygonMumbai: process.env.POLYGONSCAN_APIKEY,
       polygon: process.env.POLYGONSCAN_APIKEY,
       avalancheFujiTestnet: process.env.SNOWTRACE_API_KEY,
-      avalanche: process.env.SNOWTRACE_API_KEY
+      avalanche: process.env.SNOWTRACE_API_KEY,
+      gaiaxTestNet: process.env.GAIAX_API_KEY
     },
+    customChains: [
+      {
+        network: "gaiaxTestNet",
+        chainId: 100,
+        urls: {
+          apiURL: "https://explorer.genx.minimal-gaia-x.eu/api",
+          browserURL: "https://explorer.genx.minimal-gaia-x.eu/"
+        }
+      }
+    ]
   },
   mocha: {
     timeout: 0,
