@@ -23,7 +23,7 @@ const hardhatConfig: HardhatUserConfig = {
   defaultNetwork: "hardhat",
   networks: {
     hardhat: {},
-    gaiaxTestNet: {
+    gaiaxDirect: {
       chainId: 100,
       url: "https://rpc.genx.minimal-gaia-x.eu",
       accounts:[process.env.EDGE_DEPLOYER_PRIVATE_KEY]
@@ -106,7 +106,7 @@ const hardhatConfig: HardhatUserConfig = {
     },
     customChains: [
       {
-        network: "gaiaxTestNet",
+        network: "gaiaxDirect",
         chainId: 100,
         urls: {
           apiURL: "https://explorer.genx.minimal-gaia-x.eu/api",
