@@ -67,6 +67,15 @@ async function main() {
     address_minter = process.env.AVAX_FIREBLOCKS_MINTER;
     address_rescuer = process.env.AVAX_FIREBLOCKS_RESCUER;
     address_burner = process.env.AVAX_FIREBLOCKS_BURNER;
+  }else if (network.name =="gaiaxTestNet"){
+    address_proxyOwner = process.env.GAIAX_TESTNET_DEVELOPER_KEY;
+    address_admin = process.env.GAIAX_TESTNET_DEVELOPER_KEY; 
+    address_blocklister = process.env.GAIAX_TESTNET_DEVELOPER_KEY;
+    address_pauser = process.env.GAIAX_TESTNET_DEVELOPER_KEY;
+    address_unpauser = process.env.GAIAX_TESTNET_DEVELOPER_KEY;
+    address_minter = process.env.GAIAX_TESTNET_DEVELOPER_KEY;
+    address_rescuer = process.env.GAIAX_TESTNET_DEVELOPER_KEY;
+    address_burner = process.env.GAIAX_TESTNET_DEVELOPER_KEY;
   }
 
 
