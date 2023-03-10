@@ -26,7 +26,7 @@ const hardhatConfig: HardhatUserConfig = {
     gaiaxDirect: {
       chainId: 100,
       url: "https://rpc.genx.minimal-gaia-x.eu",
-      accounts:[process.env.EDGE_DEPLOYER_PRIVATE_KEY]
+      accounts:[process.env.GAIAX_DEPLOYER_PRIVATE_KEY]
     },
     goerliDirect: {
       url: `https://eth-goerli.g.alchemy.com/v2/${process.env.GOERLI_ALCHEMY_APIKEY}`,
@@ -102,7 +102,7 @@ const hardhatConfig: HardhatUserConfig = {
       polygon: process.env.POLYGONSCAN_APIKEY,
       avalancheFujiTestnet: process.env.SNOWTRACE_API_KEY,
       avalanche: process.env.SNOWTRACE_API_KEY,
-      gaiaxTestNet: process.env.GAIAX_API_KEY
+      gaiaxDirect: process.env.GAIAX_API_KEY
     },
     customChains: [
       {
