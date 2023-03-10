@@ -23,6 +23,11 @@ const hardhatConfig: HardhatUserConfig = {
   defaultNetwork: "hardhat",
   networks: {
     hardhat: {},
+    gaiaxDirect: {
+      chainId: 100,
+      url: "https://rpc.genx.minimal-gaia-x.eu",
+      accounts:[process.env.GAIAX_DEPLOYER_PRIVATE_KEY]
+    },
     goerliDirect: {
       url: `https://eth-goerli.g.alchemy.com/v2/${process.env.GOERLI_ALCHEMY_APIKEY}`,
       accounts: process.env.GOERLI_DEPLOYER_PRIVATE_KEY
@@ -96,8 +101,19 @@ const hardhatConfig: HardhatUserConfig = {
       polygonMumbai: process.env.POLYGONSCAN_APIKEY,
       polygon: process.env.POLYGONSCAN_APIKEY,
       avalancheFujiTestnet: process.env.SNOWTRACE_API_KEY,
-      avalanche: process.env.SNOWTRACE_API_KEY
+      avalanche: process.env.SNOWTRACE_API_KEY,
+      gaiaxDirect: process.env.GAIAX_API_KEY
     },
+    customChains: [
+      {
+        network: "gaiaxDirect",
+        chainId: 100,
+        urls: {
+          apiURL: "https://explorer.genx.minimal-gaia-x.eu/api",
+          browserURL: "https://explorer.genx.minimal-gaia-x.eu/"
+        }
+      }
+    ]
   },
   mocha: {
     timeout: 0,
