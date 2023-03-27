@@ -76,7 +76,16 @@ async function main() {
     address_minter = process.env.GAIAX_TESTNET_DEVELOPER_ADDRESS;
     address_rescuer = process.env.GAIAX_TESTNET_DEVELOPER_ADDRESS;
     address_burner = process.env.GAIAX_TESTNET_DEVELOPER_ADDRESS;
-  }
+  }else if (network.name =="arbitrumGoerliDirect"){
+  address_proxyOwner = process.env.ARBI_GOERLI_DEVELOPER_ADDRESS;
+  address_admin = process.env.ARBI_GOERLI_DEVELOPER_ADDRESS; 
+  address_blocklister = process.env.ARBI_GOERLI_DEVELOPER_ADDRESS;
+  address_pauser = process.env.ARBI_GOERLI_DEVELOPER_ADDRESS;
+  address_unpauser = process.env.ARBI_GOERLI_DEVELOPER_ADDRESS;
+  address_minter = process.env.ARBI_GOERLI_DEVELOPER_ADDRESS;
+  address_rescuer = process.env.ARBI_GOERLI_DEVELOPER_ADDRESS;
+  address_burner = process.env.ARBI_GOERLI_DEVELOPER_ADDRESS;
+}
 
 
   if (network.name == "hardhat" || network.name == "localhost") {

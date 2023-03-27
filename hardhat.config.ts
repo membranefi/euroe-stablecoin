@@ -89,6 +89,11 @@ const hardhatConfig: HardhatUserConfig = {
           process.env.AVAX_FIREBLOCKS_VAULT_ACCOUNT_ID_DEPLOYER,
       },
     },
+    arbitrumGoerliDirect: {
+      chainId: 421613,
+      url: "https://goerli-rollup.arbitrum.io/rpc",
+      accounts:[process.env.ARBI_GOERLI_DEPLOYER_PRIVATE_KEY]
+    },
   },
   typechain: {
     outDir: "typechain/euroe",
@@ -102,7 +107,8 @@ const hardhatConfig: HardhatUserConfig = {
       polygon: process.env.POLYGONSCAN_APIKEY,
       avalancheFujiTestnet: process.env.SNOWTRACE_API_KEY,
       avalanche: process.env.SNOWTRACE_API_KEY,
-      gaiaxDirect: process.env.GAIAX_API_KEY
+      gaiaxDirect: process.env.GAIAX_API_KEY,
+      arbitrumGoerli: process.env.ARBITRUMSCAN_APIKEY,
     },
     customChains: [
       {
