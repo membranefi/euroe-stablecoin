@@ -1,7 +1,6 @@
-import hre,{ ethers, network, upgrades } from "hardhat";
+import { ethers, network, upgrades } from "hardhat";
 import { verify } from "./tools";
 import { EUROe } from "../typechain/euroe";
-import { FeeData } from '@ethersproject/providers';
 
 // Used for deploying to FireBlocks
 async function main() {
