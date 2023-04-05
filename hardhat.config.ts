@@ -94,6 +94,17 @@ const hardhatConfig: HardhatUserConfig = {
       url: "https://goerli-rollup.arbitrum.io/rpc",
       accounts:[process.env.ARBI_GOERLI_DEPLOYER_PRIVATE_KEY]
     },
+    arbitrumOneFB: {
+      url: `https://arb1.arbitrum.io/rpc`,
+      gasPrice: 25,
+      gas: 75000,
+      fireblocks: {
+        privateKey: process.env.ARB_FIREBLOCKS_API_SECRET_PATH_DEPLOYER,
+        apiKey: process.env.ARB_FIREBLOCKS_API_KEY_DEPLOYER,
+        vaultAccountIds:
+          process.env.ARB_FIREBLOCKS_VAULT_ACCOUNT_ID_DEPLOYER,
+      },
+    },
   },
   typechain: {
     outDir: "typechain/euroe",
@@ -109,6 +120,7 @@ const hardhatConfig: HardhatUserConfig = {
       avalanche: process.env.SNOWTRACE_API_KEY,
       gaiaxDirect: process.env.GAIAX_API_KEY,
       arbitrumGoerli: process.env.ARBITRUMSCAN_APIKEY,
+      arbitrumOne: process.env.ARBITRUMSCAN_APIKEY,
     },
     customChains: [
       {

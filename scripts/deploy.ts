@@ -85,6 +85,15 @@ async function main() {
   address_minter = process.env.ARBI_GOERLI_DEVELOPER_ADDRESS;
   address_rescuer = process.env.ARBI_GOERLI_DEVELOPER_ADDRESS;
   address_burner = process.env.ARBI_GOERLI_DEVELOPER_ADDRESS;
+}else if (network.name =="arbitrumOneFB"){
+  address_proxyOwner = process.env.ARB_FIREBLOCKS_PROXYOWNER;
+    address_admin = process.env.ARB_FIREBLOCKS_ADMIN;
+    address_blocklister = process.env.ARB_FIREBLOCKS_BLOCKLISTER;
+    address_pauser = process.env.ARB_FIREBLOCKS_PAUSER;
+    address_unpauser = process.env.ARB_FIREBLOCKS_UNPAUSER;
+    address_minter = process.env.ARB_FIREBLOCKS_MINTER;
+    address_rescuer = process.env.ARB_FIREBLOCKS_RESCUER;
+    address_burner = process.env.ARB_FIREBLOCKS_BURNER;
 }
 
 
