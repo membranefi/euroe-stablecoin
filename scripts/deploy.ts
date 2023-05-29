@@ -76,6 +76,15 @@ async function main() {
     address_minter = process.env.GAIAX_TESTNET_DEVELOPER_ADDRESS;
     address_rescuer = process.env.GAIAX_TESTNET_DEVELOPER_ADDRESS;
     address_burner = process.env.GAIAX_TESTNET_DEVELOPER_ADDRESS;
+  }else if (network.name == "sepoliaFB") {
+    address_proxyOwner = process.env.SEPOLI_FIREBLOCKS_PROXYOWNER;
+    address_admin = process.env.SEPOLI_FIREBLOCKS_ADMIN;
+    address_blocklister = process.env.SEPOLI_FIREBLOCKS_BLOCKLISTER;
+    address_pauser = process.env.SEPOLI_FIREBLOCKS_PAUSER;
+    address_unpauser = process.env.SEPOLI_FIREBLOCKS_UNPAUSER;
+    address_minter = process.env.SEPOLI_FIREBLOCKS_MINTER;
+    address_rescuer = process.env.SEPOLI_FIREBLOCKS_RESCUER;
+    address_burner = process.env.SEPOLI_FIREBLOCKS_BURNER;
   }
 
 
