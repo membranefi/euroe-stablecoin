@@ -44,6 +44,15 @@ const hardhatConfig: HardhatUserConfig = {
           process.env.GOERLI_FIREBLOCKS_VAULT_ACCOUNT_ID_DEPLOYER,
       },
     },
+    sepoliaFB: {
+      url:`https://rpc2.sepolia.org`,
+      fireblocks: {
+        privateKey: process.env.SEPOLI_FIREBLOCKS_API_SECRET_PATH_DEPLOYER,
+        apiKey: process.env.SEPOLI_FIREBLOCKS_API_KEY_DEPLOYER,
+        vaultAccountIds:
+          process.env.SEPOLI_FIREBLOCKS_VAULT_ACCOUNT_ID_DEPLOYER,
+      },
+    },
     mumbaiFB: {
       url: "https://rpc.ankr.com/polygon_mumbai",
       fireblocks: {
@@ -121,6 +130,7 @@ const hardhatConfig: HardhatUserConfig = {
       gaiaxDirect: process.env.GAIAX_API_KEY,
       arbitrumGoerli: process.env.ARBITRUMSCAN_APIKEY,
       arbitrumOne: process.env.ARBITRUMSCAN_APIKEY,
+      sepolia: process.env.ETHERSCAN_APIKEY,
     },
     customChains: [
       {

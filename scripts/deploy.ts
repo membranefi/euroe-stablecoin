@@ -94,8 +94,16 @@ async function main() {
     address_minter = process.env.ARB_FIREBLOCKS_MINTER;
     address_rescuer = process.env.ARB_FIREBLOCKS_RESCUER;
     address_burner = process.env.ARB_FIREBLOCKS_BURNER;
+}else if (network.name == "sepoliaFB") {
+  address_proxyOwner = process.env.SEPOLI_FIREBLOCKS_PROXYOWNER;
+  address_admin = process.env.SEPOLI_FIREBLOCKS_ADMIN;
+  address_blocklister = process.env.SEPOLI_FIREBLOCKS_BLOCKLISTER;
+  address_pauser = process.env.SEPOLI_FIREBLOCKS_PAUSER;
+  address_unpauser = process.env.SEPOLI_FIREBLOCKS_UNPAUSER;
+  address_minter = process.env.SEPOLI_FIREBLOCKS_MINTER;
+  address_rescuer = process.env.SEPOLI_FIREBLOCKS_RESCUER;
+  address_burner = process.env.SEPOLI_FIREBLOCKS_BURNER;
 }
-
 
   if (network.name == "hardhat" || network.name == "localhost") {
     throw "Local deployment not possible";
