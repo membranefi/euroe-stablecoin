@@ -103,6 +103,16 @@ async function main() {
   address_minter = process.env.SEPOLI_FIREBLOCKS_MINTER;
   address_rescuer = process.env.SEPOLI_FIREBLOCKS_RESCUER;
   address_burner = process.env.SEPOLI_FIREBLOCKS_BURNER;
+}else if (network.name =="opFB")
+{
+  address_proxyOwner = process.env.OP_FIREBLOCKS_PROXYOWNER;
+  address_admin = process.env.OP_FIREBLOCKS_ADMIN;
+  address_blocklister = process.env.OP_FIREBLOCKS_BLOCKLISTER;
+  address_pauser = process.env.OP_FIREBLOCKS_PAUSER;
+  address_unpauser = process.env.OP_FIREBLOCKS_UNPAUSER;
+  address_minter = process.env.OP_FIREBLOCKS_MINTER;
+  address_rescuer = process.env.OP_FIREBLOCKS_RESCUER;
+  address_burner = process.env.OP_FIREBLOCKS_BURNER;
 }
 
   if (network.name == "hardhat" || network.name == "localhost") {

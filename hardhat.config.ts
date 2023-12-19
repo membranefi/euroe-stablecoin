@@ -114,6 +114,15 @@ const hardhatConfig: HardhatUserConfig = {
           process.env.ARB_FIREBLOCKS_VAULT_ACCOUNT_ID_DEPLOYER,
       },
     },
+    opFB: {
+      url: `https://optimism-mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`,
+      fireblocks: {
+        privateKey: process.env.OP_FIREBLOCKS_API_SECRET_PATH_DEPLOYER,
+        apiKey: process.env.OP_FIREBLOCKS_API_KEY_DEPLOYER,
+        vaultAccountIds:
+          process.env.OP_FIREBLOCKS_VAULT_ACCOUNT_ID_DEPLOYER,
+      },
+    },
   },
   typechain: {
     outDir: "typechain/euroe",
@@ -131,6 +140,7 @@ const hardhatConfig: HardhatUserConfig = {
       arbitrumGoerli: process.env.ARBITRUMSCAN_APIKEY,
       arbitrumOne: process.env.ARBITRUMSCAN_APIKEY,
       sepolia: process.env.ETHERSCAN_APIKEY,
+      optimisticEthereum: process.env.OP_APIKEY,
     },
     customChains: [
       {
