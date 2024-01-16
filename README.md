@@ -1,6 +1,7 @@
 # EUROe
 
-Smart contracts for the Euro-backed stablecoin project, EUROe.
+This repository contains the EUROe stablecoin smart contract for EVM -blockchains. Please find the higher level visual documentation and links to other blockchain documentation in the [EUROe Developer Portal](https://dev.euroe.com/).
+
 
 ## Functionalities
 
