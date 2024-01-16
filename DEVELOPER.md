@@ -1,5 +1,7 @@
 # EURO Stablecoin developer instructions
 
+Please refer to the [EUROe Developer Portal](https://dev.euroe.com/) for more resources.
+
 The project uses the following main frameworks:
 
 - OpenZeppelin smart contract templates
@@ -32,3 +34,7 @@ Steps:
 1. Set your environment variables in `.secrets.env`. You can see `.secrets.env.example` for the format. Note that you don't need any of the Fireblocks-related settings when deploying directly with Hardhat
 1. Deploy: `npx hardhat run scripts/deployManual.ts --network goerliDirect` 
 1. Go to Etherscan and open the address given by the deployment script. Mark the contract as proxy in Etherscan.
+
+## Known issues
+The following issues are known to impact EUROe deployments:
+1. Permit DoS issue ([Read more in the EUROe Developer Portal](https://dev.euroe.com/docs/BridgedEUROe/developers))
