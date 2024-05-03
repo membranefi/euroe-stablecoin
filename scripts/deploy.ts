@@ -113,6 +113,15 @@ async function main() {
   address_minter = process.env.OP_FIREBLOCKS_MINTER;
   address_rescuer = process.env.OP_FIREBLOCKS_RESCUER;
   address_burner = process.env.OP_FIREBLOCKS_BURNER;
+} else if (network.name = "amoyFB"){
+  address_proxyOwner = process.env.AMOY_FIREBLOCKS_PROXYOWNER;
+  address_admin = process.env.AMOY_FIREBLOCKS_ADMIN;
+  address_blocklister = process.env.AMOY_FIREBLOCKS_BLOCKLISTER;
+  address_pauser = process.env.AMOY_FIREBLOCKS_PAUSER;
+  address_unpauser = process.env.AMOY_FIREBLOCKS_UNPAUSER;
+  address_minter = process.env.AMOY_FIREBLOCKS_MINTER;
+  address_rescuer = process.env.AMOY_FIREBLOCKS_RESCUER;
+  address_burner = process.env.AMOY_FIREBLOCKS_BURNER;
 }
 
   if (network.name == "hardhat" || network.name == "localhost") {
