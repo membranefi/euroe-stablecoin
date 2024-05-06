@@ -123,6 +123,16 @@ const hardhatConfig: HardhatUserConfig = {
           process.env.OP_FIREBLOCKS_VAULT_ACCOUNT_ID_DEPLOYER,
       },
     },
+    amoyFB: {
+      url: `https://polygon-amoy.infura.io/v3/${process.env.INFURA_API_KEY}`,
+      fireblocks: {
+        privateKey: process.env.AMOY_FIREBLOCKS_API_SECRET_PATH_DEPLOYER,
+        apiKey: process.env.AMOY_FIREBLOCKS_API_KEY_DEPLOYER,
+        vaultAccountIds:
+          process.env.AMOY_FIREBLOCKS_VAULT_ACCOUNT_ID_DEPLOYER,
+      },
+    
+    },
   },
   typechain: {
     outDir: "typechain/euroe",
@@ -141,6 +151,9 @@ const hardhatConfig: HardhatUserConfig = {
       arbitrumOne: process.env.ARBITRUMSCAN_APIKEY,
       sepolia: process.env.ETHERSCAN_APIKEY,
       optimisticEthereum: process.env.OP_APIKEY,
+      polygonAmoy: process.env.POLYGONSCAN_APIKEY
+
+
     },
     customChains: [
       {
@@ -150,6 +163,14 @@ const hardhatConfig: HardhatUserConfig = {
           apiURL: "https://explorer.genx.minimal-gaia-x.eu/api",
           browserURL: "https://explorer.genx.minimal-gaia-x.eu/"
         }
+      },
+      {
+        network: "polygonAmoy",
+        chainId: 80002,
+        urls: {
+          apiURL: "https://api-amoy.polygonscan.com/api",
+          browserURL: "https://amoy.polygonscan.com"
+        },
       }
     ]
   },
