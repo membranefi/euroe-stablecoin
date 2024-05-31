@@ -122,6 +122,15 @@ async function main() {
   address_minter = process.env.AMOY_FIREBLOCKS_MINTER;
   address_rescuer = process.env.AMOY_FIREBLOCKS_RESCUER;
   address_burner = process.env.AMOY_FIREBLOCKS_BURNER;
+}else if (network.name == "pontusxTestnet") {
+  address_proxyOwner = process.env.PONTUSX_TESTNET_DEVELOPER_ADDRESS;
+  address_admin = process.env.PONTUSX_TESTNET_DEVELOPER_ADDRESS;
+  address_blocklister = process.env.PONTUSX_TESTNET_DEVELOPER_ADDRESS;
+  address_pauser = process.env.PONTUSX_TESTNET_DEVELOPER_ADDRESS;
+  address_unpauser = process.env.PONTUSX_TESTNET_DEVELOPER_ADDRESS;
+  address_minter = process.env.PONTUSX_TESTNET_DEVELOPER_ADDRESS;
+  address_rescuer = process.env.PONTUSX_TESTNET_DEVELOPER_ADDRESS;
+  address_burner = process.env.PONTUSX_TESTNET_DEVELOPER_ADDRESS;
 }
 
   if (network.name == "hardhat" || network.name == "localhost") {

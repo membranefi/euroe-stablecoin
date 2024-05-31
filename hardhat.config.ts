@@ -23,6 +23,11 @@ const hardhatConfig: HardhatUserConfig = {
   defaultNetwork: "hardhat",
   networks: {
     hardhat: {},
+    pontusxTestnet: {
+      chainId: 32457,
+      url: "https://rpc.test.pontus-x.eu/",
+      accounts: [process.env.PONTUSX_DEPLOYER_PRIVATE_KEY],
+    },
     gaiaxDirect: {
       chainId: 100,
       url: "https://rpc.genx.minimal-gaia-x.eu",
@@ -151,7 +156,8 @@ const hardhatConfig: HardhatUserConfig = {
       arbitrumOne: process.env.ARBITRUMSCAN_APIKEY,
       sepolia: process.env.ETHERSCAN_APIKEY,
       optimisticEthereum: process.env.OP_APIKEY,
-      polygonAmoy: process.env.POLYGONSCAN_APIKEY
+      polygonAmoy: process.env.POLYGONSCAN_APIKEY,
+      pontusxTestnet: process.env.PONTUSX_APIKEY,
 
 
     },
